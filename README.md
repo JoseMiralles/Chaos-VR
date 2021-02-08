@@ -6,7 +6,7 @@
 
 # Overview
 
-This will be a VR "shoot 'em up" style game with low poly aesthetics.
+This will be a VR "shoot 'em up" style game with low poly aesthetics. I expect this project to be challenging, but do-able.
 
 <br>
 
@@ -32,7 +32,7 @@ I will be using Three JS to build it. Three JS comes with [VR support](https://t
 
 Shooting will work using projectiles, but might switch to ray casting for optimization purposes. [This demo](https://threejs.org/examples/?q=vr#webxr_vr_dragging) uses ray casting (from the controller) to pick and grab objects from a distance.
 
-Facebook recommends keeping total vertices to under 200k for all assets. This is to acheive 72 frames per second on the Oculus Quest (gen 1). Because of this, 3D meshes will follow a low poly aesthetic.  The game will also either have low resolution textures, or a flat color palette for performance issues.
+Facebook recommends keeping total vertices to under 200k for all assets. This is to acheive 72 frames per second on the Oculus Quest (gen 1). Because of this, 3D meshes will follow a low poly aesthetic.  The game will also either have low resolution textures, or a flat color palette for optimization purposes.
 
 Meshes will be built using Blender, and textured using Quixel Mixer.
 
