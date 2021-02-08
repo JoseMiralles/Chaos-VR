@@ -2,6 +2,8 @@ import * as THREE from "three";
 import { VRButton } from "./plugins/VRButton";
 import { GLTFLoader } from "./plugins/GLTFLoader";
 
+import pistolModel from "../../meshes/pistol_mesh.glb";
+
 export default class Game {
 
     constructor( HTMLElement ){
@@ -84,12 +86,12 @@ export default class Game {
         this.scene.add( this.controller2 );
 
         const loader = new GLTFLoader();
-        loader.load(require("../../meshes/pistol_mesh.glb"), ( pistolModel ) => {
+        loader.load( "/dist/" + pistolModel, ( loadedModel ) => {
             this.controllerGrip1 = this.renderer.xr.getControllerGrip(0);
             this.controllerGrip2 = this.renderer.xr.getControllerGrip(1);
 
-            this.controllerGrip1.add( pistolModel );
-            this.controllerGrip2.add( pistolModel );
+            this.controllerGrip1.add( loadedModel.scene.children[0] );
+            this.controllerGrip2.add( loadedModel.scene.children[0] );
         });
 
         window.addEventListener( 'resize', this.onWindowResize );
