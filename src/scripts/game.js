@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { VRButton } from "./plugins/VRButton";
 import { GLTFLoader } from "./plugins/GLTFLoader";
+import { BoxLineGeometry } from "./plugins/BoxLineGeometry";
 
 import pistolModel from "../../meshes/pistol_mesh.glb";
 
@@ -25,23 +26,20 @@ export default class Game {
         this.clock = new THREE.Clock();
 
         this.innitializeGame(HTMLElement);
-    }
-
-    start(){
-
+        this.animate();
     }
 
     innitializeGame(HTMLElement){
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color( 0x1f1f1f );
 
-        this.camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0., 10 );
+        this.camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 10 );
         this.camera.position.set(0, 1.6, 3);
 
         // TODO: switch to a better enviroment.
         this.room = new THREE.LineSegments(
-            new THREE.BoxGeometry( 6, 6, 6, 10, 10, 10 ),
-            new THREE.LineBasicMaterial( { color: 0xc71717 } )
+            new BoxLineGeometry( 6, 6, 6, 10, 10, 10 ),
+            new THREE.LineBasicMaterial( { color: 0x808080  } )
         );
         this.room.geometry.translate(0, 3, 0);
         this.scene.add( this.room );
@@ -66,8 +64,8 @@ export default class Game {
         this.controller1 = this.renderer.xr.getController(0);
         this.controller1.addEventListener( "selectstart", this.onSelectStart );
         this.controller1.addEventListener( "selectend", this.onSelectEnd );
-        this.controller1.addEventListener( "connected", function(e){
-            this.add( buildController( e.data ) );
+        this.controller1.addEventListener( "connected", (e) => {
+            this.controller1.add( this.buildController( e.data ) );
         });
         this.controller1.addEventListener( "disconnected", function(e){
             this.remove( this.children[0] );
@@ -77,8 +75,8 @@ export default class Game {
         this.controller2 = this.renderer.xr.getController(1);
         this.controller2.addEventListener( "selectstart", this.onSelectStart );
         this.controller2.addEventListener( "selectend", this.onSelectEnd );
-        this.controller2.addEventListener( "connected", function(e){
-            this.add( buildController( e.data ) );
+        this.controller2.addEventListener( "connected", (e) => {
+            this.controller2.add( this.buildController( e.data ) );
         });
         this.controller2.addEventListener( "disconnected", function(e){
             this.remove( this.children[0] );
@@ -90,8 +88,8 @@ export default class Game {
             this.controllerGrip1 = this.renderer.xr.getControllerGrip(0);
             this.controllerGrip2 = this.renderer.xr.getControllerGrip(1);
 
-            this.controllerGrip1.add( loadedModel.scene.children[0] );
-            this.controllerGrip2.add( loadedModel.scene.children[0] );
+            this.controllerGrip1.add( loadedModel.scene );
+            this.controllerGrip2.add( loadedModel.scene );
         });
 
         window.addEventListener( 'resize', this.onWindowResize );
@@ -106,7 +104,7 @@ export default class Game {
     }
 
     buildController( data ){
-        let geometry, amterial;
+        let geometry, material;
 
         switch( data.targetRayMode ){
 
@@ -147,14 +145,14 @@ export default class Game {
             bullet.userData.velocity.z = Math.random() * 0.01 - 0.005;
 
             // Set bullet direction relative to the controller direction.
-            bullet.userData.velocity.applyQuarternion( controller.quarterion );
+            bullet.userData.velocity.applyQuaternion( controller.quaternion );
 
             this.room.add( bullet );
         }
     }
 
     animate(){
-        this.renderer.setAnimationLoop( this.render );
+        this.renderer.setAnimationLoop( this.render.bind(this) );
     }
 
     render(){
@@ -167,7 +165,7 @@ export default class Game {
 
         const range = 3 - this.radius;
 
-        this.renderer.render( scene, camera );
+        this.renderer.render( this.scene, this.camera );
 
     }
 
