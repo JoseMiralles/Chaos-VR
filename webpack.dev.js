@@ -9,5 +9,7 @@ module.exports = merge(common, {
     contentBase: "./",
     watchContentBase: true,
     open: "chrome", // use "chrome" for PC
+    openPage: 'http://localhost:8080',
+    host: '0.0.0.0', // host on local network (Use PC's ip, "ipconfig" in cmd)
   },
 });

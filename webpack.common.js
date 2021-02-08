@@ -58,7 +58,7 @@ module: {
         ],
     },
     {
-        test: /\.glb$/,
+        test: /\.(glb|gltf)$/,
         use: [{
             loader: "file-loader",
             options: {

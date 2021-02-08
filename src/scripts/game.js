@@ -17,10 +17,10 @@ export default class Game {
         this.renderer = null;
         this.room = null;
         
-        this.radius = 0.08
+        this.radius = 0.01
         this.normal = new THREE.Vector3();
         this.relativeVelocity = new THREE.Vector3();
-        this.bulletGeometry = new THREE.IcosahedronGeometry( this.radius, 3 );
+        this.bulletGeometry = new THREE.IcosahedronGeometry( this.radius, 0 );
         
 
         this.clock = new THREE.Clock();
@@ -83,16 +83,17 @@ export default class Game {
         });
         this.scene.add( this.controller2 );
 
+        this.controllerGrip1 = this.renderer.xr.getControllerGrip(0);
+        this.controllerGrip2 = this.renderer.xr.getControllerGrip(1);
         const loader = new GLTFLoader();
         loader.load( "/dist/" + pistolModel, ( loadedModel ) => {
-            this.controllerGrip1 = this.renderer.xr.getControllerGrip(0);
-            this.controllerGrip2 = this.renderer.xr.getControllerGrip(1);
-
             this.controllerGrip1.add( loadedModel.scene );
-            this.controllerGrip2.add( loadedModel.scene );
+            this.controllerGrip2.add( loadedModel.scene.clone() );
         });
+        this.scene.add( this.controllerGrip1 );
+        this.scene.add( this.controllerGrip2 );
 
-        window.addEventListener( 'resize', this.onWindowResize );
+        window.addEventListener( 'resize', this.onWindowResize.bind(this) );
     }
 
     onSelectStart(){
@@ -155,6 +156,7 @@ export default class Game {
         this.renderer.setAnimationLoop( this.render.bind(this) );
     }
 
+    // Runs once every frame.
     render(){
 
         this.handleController( this.controller1 );
