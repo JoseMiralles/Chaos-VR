@@ -26,6 +26,12 @@ This will be a VR "shoot 'em up" style game with low poly aesthetics. I expect t
 
 <br>
 
+# Wireframe
+
+https://docs.google.com/drawings/d/1Nfko0PICa2tc0IVYHJFm5vxsXy7yRiD1JitUlfij2P8/edit?usp=sharing
+
+<br>
+
 # Tech
 
 I will be using Three JS to build it. Three JS comes with [VR support](https://threejs.org/docs/#manual/en/introduction/How-to-create-VR-content) out of the box. And also offers many demos [such as this one](https://threejs.org/examples/webxr_vr_cubes.html), which shows how to shoot cubes out the user's hands when they press the trigger buttons.
