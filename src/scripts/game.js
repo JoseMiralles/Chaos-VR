@@ -4,6 +4,7 @@ import { GLTFLoader } from "./plugins/GLTFLoader";
 import { BoxLineGeometry } from "./plugins/BoxLineGeometry";
 
 import pistolModel from "../../meshes/pistol_mesh.glb";
+import { Raycaster } from "three";
 
 export default class Game {
 
@@ -25,6 +26,8 @@ export default class Game {
 
         this.camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 10 );
         this.camera.position.set(0, 1.6, 3);
+        this.rayCaster = new THREE.Raycaster();
+        this.tempMatrix = new THREE.Matrix4();
 
         // TODO: switch to a better enviroment.
         this.room = new THREE.LineSegments(
@@ -33,6 +36,7 @@ export default class Game {
         );
         this.room.geometry.translate(0, 3, 0);
         this.scene.add( this.room );
+        this.scene.add( new THREE.BoxGeometry( 1, 1, 1 ) ); // Testing purposes
 
         // Setup lights
         this.scene.add( new THREE.HemisphereLight( 0x606060, 0x404040 ) );
@@ -53,22 +57,10 @@ export default class Game {
         // Setup controllers and listeners.
         this.controller1 = this.renderer.xr.getController(0);
         this.controller1.addEventListener( "selectstart", this.shoot(this.controller1).bind(this) );
-        this.controller1.addEventListener( "connected", (e) => {
-            this.controller1.add( this.buildController( e.data ) );
-        });
-        this.controller1.addEventListener( "disconnected", function(e){
-            this.remove( this.children[0] );
-        });
         this.scene.add( this.controller1 );
         
         this.controller2 = this.renderer.xr.getController(1);
         this.controller2.addEventListener( "selectstart", this.shoot(this.controller2).bind(this) );
-        this.controller2.addEventListener( "connected", (e) => {
-            this.controller2.add( this.buildController( e.data ) );
-        });
-        this.controller2.addEventListener( "disconnected", function(e){
-            this.remove( this.children[0] );
-        });
         this.scene.add( this.controller2 );
 
         this.controllerGrip1 = this.renderer.xr.getControllerGrip(0);
@@ -90,50 +82,27 @@ export default class Game {
         window.addEventListener( 'resize', this.onWindowResize.bind(this) );
     }
 
-    buildController( data ){
-        let geometry, material;
-
-        switch( data.targetRayMode ){
-
-            case "tracked-pointer":
-                geometry = new THREE.BufferGeometry();
-                geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( [ 0, 0, 0, 0, 0, - 1 ], 3 ) );
-                geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( [ 0.5, 0.5, 0.5, 0, 0, 0 ], 3 ) );
-                material = new THREE.LineBasicMaterial( { vertexColors: true, blending: THREE.AdditiveBlending } );
-                return new THREE.Line( geometry, material );
-
-            case "gaze":
-                geometry = new THREE.RingGeometry( 0.02, 0.04, 32 ).translate( 0, 0, - 1 );
-                material = new THREE.MeshBasicMaterial( { opacity: 0.5, transparent: true } );
-                return new THREE.Mesh( geometry, material );
-
-        }
-    }
-
     onWindowResize(){
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
         this.renderer.setSize( window.innerWidth, window.innerHeight );
     }
-    
-    // Returns a function which get's called when a trigger button is pressed.
+
     shoot( controller ){
         return (e) => {
-            const bullet = new THREE.Mesh( this.bulletGeometry,
-                new THREE.MeshLambertMaterial( { color: 0x00adff } ));
+            this.tempMatrix.identity().extractRotation( controller.barrelEnd.matrixWorld );
+            this.rayCaster.ray.origin.setFromMatrixPosition( controller.barrelEnd.matrixWorld );
+            this.rayCaster.ray.direction.set( 0, 0, - 1 ).applyMatrix4( this.tempMatrix );
 
-            // set initial bullet position relative to the controller.
-            controller.barrelEnd.getWorldPosition(bullet.position);
-            bullet.userData.velocity = new THREE.Vector3();
-            bullet.userData.velocity.x = Math.random() * 0.01 - 0.005;
-            bullet.userData.velocity.y = Math.random() * 0.01 - 0.005;
-            bullet.userData.velocity.z = Math.random() * 0.01 - 0.005;
+            const arrowHelper = new THREE.ArrowHelper(this.rayCaster.ray.direction, this.rayCaster.ray.origin, 300, 0x00adff);
+            this.room.add( arrowHelper );
 
-            // Set bullet direction relative to the controller direction.
-            controller.barrelEnd.getWorldQuaternion(bullet.userData.velocity.quaternion);
+            setTimeout(() => {
+                this.room.remove( arrowHelper );
+            }, 50);
 
-            this.room.add( bullet );
-        } 
+            const target = this.rayCaster.intersectObjects( this.scene.children )[0];
+        }
     }
 
     animate(){
