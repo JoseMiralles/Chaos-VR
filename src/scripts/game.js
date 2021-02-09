@@ -21,15 +21,15 @@ export default class Game {
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color( 0x1f1f1f );
 
-        this.camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 10 );
+        this.camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 25 );
         this.camera.position.set(0, 1.6, 3);
 
         // TODO: switch to a better enviroment.
         this.room = new THREE.LineSegments(
-            new BoxLineGeometry( 6, 6, 6, 10, 10, 10 ),
+            new BoxLineGeometry( 20, 20, 20, 10, 10, 10 ),
             new THREE.LineBasicMaterial( { color: 0x808080  } )
         );
-        this.room.geometry.translate(0, 3, 0);
+        this.room.geometry.translate(0, 10, 0);
         this.scene.add( this.room );
 
         // Setup lights
