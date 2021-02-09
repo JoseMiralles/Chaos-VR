@@ -2,17 +2,17 @@ import Pistol from "./pistol";
 
 export default class Player {
 
-    constructor( scene, renderer, assetStore ){
+    constructor( scene, renderer, assetStore, enemyGroup ){
         this.scene = scene;
         this.renderer = renderer;
 
-        this.setupWeapons();
+        this.setupWeapons( enemyGroup );
         this.setupControllers(assetStore.pistolModel);
     }
 
-    setupWeapons(){
-        this.pistol1 = new Pistol( this.scene );
-        this.pistol2 = new Pistol( this.scene );
+    setupWeapons( enemyGroup ){
+        this.pistol1 = new Pistol( this.scene, enemyGroup );
+        this.pistol2 = new Pistol( this.scene, enemyGroup );
     }
 
     setupControllers(pistolModel){

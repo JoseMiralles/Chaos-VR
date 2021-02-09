@@ -3,6 +3,7 @@ import { VRButton } from "three/examples/jsm/webxr/VRButton.js";
 import { BoxLineGeometry } from "./plugins/BoxLineGeometry";
 import Player from "./player";
 import AssetStore from "./util/AssetStore";
+import EnemySpawner from "./enemy_spawner";
 
 export default class Game {
 
@@ -11,8 +12,10 @@ export default class Game {
         this.clock = new THREE.Clock();
 
         // Load 3d assets, initialize game, and start animation loop.
-        this.assetStore = new AssetStore(()=>{
+        this.assetStore = new AssetStore( () => {
             this.innitializeGame(HTMLElement);
+            this.setupEnemySpawner({limit: 3});
+            this.setupPlayer();
             this.animate();
         });
     }
@@ -23,14 +26,6 @@ export default class Game {
 
         this.camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 25 );
         this.camera.position.set(0, 1.6, 3);
-
-        // TODO: switch to a better enviroment.
-        this.room = new THREE.LineSegments(
-            new BoxLineGeometry( 20, 20, 20, 10, 10, 10 ),
-            new THREE.LineBasicMaterial( { color: 0x808080  } )
-        );
-        this.room.geometry.translate(0, 10, 0);
-        this.scene.add( this.room );
 
         // Setup lights
         this.scene.add( new THREE.HemisphereLight( 0x606060, 0x404040 ) );
@@ -48,9 +43,21 @@ export default class Game {
         HTMLElement.appendChild( this.renderer.domElement );
         HTMLElement.appendChild( VRButton.createButton( this.renderer ) );
 
-        this.player = new Player( this.scene, this.renderer, this.assetStore );
-
         window.addEventListener( 'resize', this.onWindowResize.bind(this) );
+    }
+
+    setupEnemySpawner( options ){
+        this.enemyGroup = new THREE.Group();
+        this.scene.add(this.enemyGroup);
+        this.enemySpawner = new EnemySpawner(
+            this.enemyGroup,
+            this.assetStore.robot1,
+            options.limit
+        );
+    }
+
+    setupPlayer(){
+        this.player = new Player( this.scene, this.renderer, this.assetStore, this.enemyGroup );
     }
 
     onWindowResize(){
@@ -60,14 +67,16 @@ export default class Game {
     }
 
     animate(){
-        this.renderer.setAnimationLoop( this.render.bind(this) );
+        this.renderer.setAnimationLoop( this.tick.bind(this) );
     }
 
     // Runs once every frame.
-    render(){
+    tick(){
 
         // * 0.8 slows down the simulation.
         const delta = this.clock.getDelta() * 0.8;
+
+        this.enemyGroup.children.forEach( child => child.tick(delta) );
 
         this.renderer.render( this.scene, this.camera );
 

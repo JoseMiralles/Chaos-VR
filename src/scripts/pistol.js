@@ -3,11 +3,12 @@ import * as THREE from "three";
 export default class Pistol {
 
     /* A pistol object, takes in a scene objet which could be a group instead of the main scene. */
-    constructor( scene ){
+    constructor( scene, enemyGroup ){
         this.rayCaster = new THREE.Raycaster();
         this.tempMatrix = new THREE.Matrix4();
-        this.damage = 16;
+        this.damage = 55;
         this.scene = scene;
+        this.enemyGroup = enemyGroup;
 
         this.shoot = this.shoot.bind(this);
     }
@@ -37,7 +38,9 @@ export default class Pistol {
             this.scene.remove( arrowHelper );
         }, 50);
 
-        const target = this.rayCaster.intersectObjects( this.scene.children )[0];
+        const target = this.rayCaster.intersectObjects( this.enemyGroup.children, true )[0];
+        if (target)
+            target.object.parent.applyDamage( this.damage );
     }
 
 }
