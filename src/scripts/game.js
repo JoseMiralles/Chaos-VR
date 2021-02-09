@@ -2,16 +2,19 @@ import * as THREE from "three";
 import { VRButton } from "./plugins/VRButton";
 import { BoxLineGeometry } from "./plugins/BoxLineGeometry";
 import Player from "./player";
+import AssetStore from "./util/AssetStore";
 
 export default class Game {
 
     constructor( HTMLElement ){
         this.radius = 0.01
-
         this.clock = new THREE.Clock();
 
-        this.innitializeGame(HTMLElement);
-        this.animate();
+        // Load 3d assets, initialize game, and start animation loop.
+        this.assetStore = new AssetStore(()=>{
+            this.innitializeGame(HTMLElement);
+            this.animate();
+        });
     }
 
     innitializeGame(HTMLElement){
@@ -45,7 +48,7 @@ export default class Game {
         HTMLElement.appendChild( this.renderer.domElement );
         HTMLElement.appendChild( VRButton.createButton( this.renderer ) );
 
-        this.player = new Player( this.scene, this.renderer );
+        this.player = new Player( this.scene, this.renderer, this.assetStore );
 
         window.addEventListener( 'resize', this.onWindowResize.bind(this) );
     }
