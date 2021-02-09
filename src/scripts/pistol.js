@@ -2,6 +2,7 @@ import * as THREE from "three";
 
 export default class Pistol {
 
+    /* A pistol object, takes in a scene objet which could be a group instead of the main scene. */
     constructor( scene ){
         this.rayCaster = new THREE.Raycaster();
         this.tempMatrix = new THREE.Matrix4();
@@ -29,7 +30,7 @@ export default class Pistol {
         this.rayCaster.ray.direction.set( 0, 0, - 1 ).applyMatrix4( this.tempMatrix );
 
         const arrowHelper = new THREE.ArrowHelper
-            (this.rayCaster.ray.direction, this.rayCaster.ray.origin, 300, 0x00adff);
+            (this.rayCaster.ray.direction, this.rayCaster.ray.origin, 1000, 0x00adff);
         this.scene.add( arrowHelper );
 
         setTimeout(() => {
