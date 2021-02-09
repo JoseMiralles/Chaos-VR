@@ -87,8 +87,14 @@ export default class Game {
         this.controllerGrip2 = this.renderer.xr.getControllerGrip(1);
         const loader = new GLTFLoader();
         loader.load( "/dist/" + pistolModel, ( loadedModel ) => {
-            this.controllerGrip1.add( loadedModel.scene );
-            this.controllerGrip2.add( loadedModel.scene.clone() );
+            const pistolModel1 = loadedModel.scene;
+            const pistolModel2 = loadedModel.scene.clone();
+
+            this.controller1.barrelEnd = pistolModel1.children[0];
+            this.controller2.barrelEnd = pistolModel2.children[0];
+
+            this.controllerGrip1.add( pistolModel1 );
+            this.controllerGrip2.add( pistolModel2 );
         });
         this.scene.add( this.controllerGrip1 );
         this.scene.add( this.controllerGrip2 );
@@ -138,15 +144,14 @@ export default class Game {
                 new THREE.MeshLambertMaterial( { color: 0x00adff } ));
 
             // set initial bullet position relative to the controller.
-            bullet.position.copy( controller.position );
-
+            controller.barrelEnd.getWorldPosition(bullet.position);
             bullet.userData.velocity = new THREE.Vector3();
             bullet.userData.velocity.x = Math.random() * 0.01 - 0.005;
             bullet.userData.velocity.y = Math.random() * 0.01 - 0.005;
             bullet.userData.velocity.z = Math.random() * 0.01 - 0.005;
 
             // Set bullet direction relative to the controller direction.
-            bullet.userData.velocity.applyQuaternion( controller.quaternion );
+            controller.barrelEnd.getWorldQuaternion(bullet.userData.velocity.quaternion);
 
             this.room.add( bullet );
         }
