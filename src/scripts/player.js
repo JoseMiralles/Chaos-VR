@@ -12,6 +12,7 @@ export default class Player {
         this.setupControllers();
     }
 
+    
     setupWeapons(){
         this.pistol1 = new Pistol( this.scene );
         this.pistol2 = new Pistol( this.scene );

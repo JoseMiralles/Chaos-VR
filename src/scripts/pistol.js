@@ -11,10 +11,12 @@ export default class Pistol {
         this.shoot = this.shoot.bind(this);
     }
 
+    // Set's the starting point of each shot.
     setBarrelEnd( barrelEnd ){
         this.barrelEnd = barrelEnd;
     }
 
+    // Shoots and applies damage to the target, if any.
     shoot(){
 
         if ( !this.barrelEnd ) {
