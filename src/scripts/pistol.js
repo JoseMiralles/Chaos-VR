@@ -1,0 +1,40 @@
+import * as THREE from "three";
+
+export default class Pistol {
+
+    constructor( scene ){
+        this.rayCaster = new THREE.Raycaster();
+        this.tempMatrix = new THREE.Matrix4();
+        this.damage = 16;
+        this.scene = scene;
+
+        this.shoot = this.shoot.bind(this);
+    }
+
+    setBarrelEnd( barrelEnd ){
+        this.barrelEnd = barrelEnd;
+    }
+
+    shoot(){
+
+        if ( !this.barrelEnd ) {
+            console.warn("This pistol doesn't have a barrel end! Assign one.");
+            return
+        }
+
+        this.tempMatrix.identity().extractRotation( this.barrelEnd.matrixWorld );
+        this.rayCaster.ray.origin.setFromMatrixPosition( this.barrelEnd.matrixWorld );
+        this.rayCaster.ray.direction.set( 0, 0, - 1 ).applyMatrix4( this.tempMatrix );
+
+        const arrowHelper = new THREE.ArrowHelper
+            (this.rayCaster.ray.direction, this.rayCaster.ray.origin, 300, 0x00adff);
+        this.scene.add( arrowHelper );
+
+        setTimeout(() => {
+            this.scene.remove( arrowHelper );
+        }, 50);
+
+        const target = this.rayCaster.intersectObjects( this.scene.children )[0];
+    }
+
+}
