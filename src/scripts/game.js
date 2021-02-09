@@ -142,11 +142,9 @@ export default class Game {
 
     // Runs once every frame.
     render(){
-        
+
         // * 0.8 slows down the simulation.
         const delta = this.clock.getDelta() * 0.8;
-
-        const range = 3 - this.radius;
 
         this.renderer.render( this.scene, this.camera );
 
