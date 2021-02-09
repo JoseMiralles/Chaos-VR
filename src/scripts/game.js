@@ -8,20 +8,10 @@ import pistolModel from "../../meshes/pistol_mesh.glb";
 export default class Game {
 
     constructor( HTMLElement ){
-        this.camera = null;
-        this.controller1 = null;
-        this.controller2 = null;
-        this.controllerGrip1 = null;
-        this.controllerGrip2 = null;
-        this.scene = null;
-        this.renderer = null;
-        this.room = null;
-        
         this.radius = 0.01
         this.normal = new THREE.Vector3();
         this.relativeVelocity = new THREE.Vector3();
         this.bulletGeometry = new THREE.IcosahedronGeometry( this.radius, 0 );
-        
 
         this.clock = new THREE.Clock();
 
@@ -62,8 +52,7 @@ export default class Game {
 
         // Setup controllers and listeners.
         this.controller1 = this.renderer.xr.getController(0);
-        this.controller1.addEventListener( "selectstart", this.onSelectStart );
-        this.controller1.addEventListener( "selectend", this.onSelectEnd );
+        this.controller1.addEventListener( "selectstart", this.shoot(this.controller1).bind(this) );
         this.controller1.addEventListener( "connected", (e) => {
             this.controller1.add( this.buildController( e.data ) );
         });
@@ -73,8 +62,7 @@ export default class Game {
         this.scene.add( this.controller1 );
         
         this.controller2 = this.renderer.xr.getController(1);
-        this.controller2.addEventListener( "selectstart", this.onSelectStart );
-        this.controller2.addEventListener( "selectend", this.onSelectEnd );
+        this.controller2.addEventListener( "selectstart", this.shoot(this.controller2).bind(this) );
         this.controller2.addEventListener( "connected", (e) => {
             this.controller2.add( this.buildController( e.data ) );
         });
@@ -102,14 +90,6 @@ export default class Game {
         window.addEventListener( 'resize', this.onWindowResize.bind(this) );
     }
 
-    onSelectStart(){
-        this.userData.isSelecting = true;
-    }
-
-    onSelectEnd(){
-        this.userData.isSelecting = false;
-    }
-
     buildController( data ){
         let geometry, material;
 
@@ -135,11 +115,10 @@ export default class Game {
         this.camera.updateProjectionMatrix();
         this.renderer.setSize( window.innerWidth, window.innerHeight );
     }
-
-    // Gets called once every frame / render loop.
-    handleController( controller ){
-
-        if ( controller.userData.isSelecting ){
+    
+    // Returns a function which get's called when a trigger button is pressed.
+    shoot( controller ){
+        return (e) => {
             const bullet = new THREE.Mesh( this.bulletGeometry,
                 new THREE.MeshLambertMaterial( { color: 0x00adff } ));
 
@@ -154,7 +133,7 @@ export default class Game {
             controller.barrelEnd.getWorldQuaternion(bullet.userData.velocity.quaternion);
 
             this.room.add( bullet );
-        }
+        } 
     }
 
     animate(){
@@ -163,10 +142,7 @@ export default class Game {
 
     // Runs once every frame.
     render(){
-
-        this.handleController( this.controller1 );
-        this.handleController( this.controller2 );
-
+        
         // * 0.8 slows down the simulation.
         const delta = this.clock.getDelta() * 0.8;
 
