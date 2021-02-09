@@ -1,15 +1,13 @@
 import Pistol from "./pistol";
-import { GLTFLoader } from "./plugins/GLTFLoader";
-import pistolModel from "../../meshes/pistol_mesh.glb";
 
 export default class Player {
 
-    constructor( scene, renderer ){
+    constructor( scene, renderer, assetStore ){
         this.scene = scene;
         this.renderer = renderer;
 
         this.setupWeapons();
-        this.setupControllers();
+        this.setupControllers(assetStore.pistolModel);
     }
 
     setupWeapons(){
@@ -17,7 +15,7 @@ export default class Player {
         this.pistol2 = new Pistol( this.scene );
     }
 
-    setupControllers(){
+    setupControllers(pistolModel){
         this.controller1 = this.renderer.xr.getController(0);
         this.controller1.addEventListener( "selectstart", this.pistol1.shoot);
         this.scene.add( this.controller1 );
@@ -28,17 +26,13 @@ export default class Player {
 
         this.controllerGrip1 = this.renderer.xr.getControllerGrip(0);
         this.controllerGrip2 = this.renderer.xr.getControllerGrip(1);
-        const loader = new GLTFLoader();
-        loader.load( "/dist/" + pistolModel, ( loadedModel ) => {
-            const pistolModel1 = loadedModel.scene;
-            const pistolModel2 = loadedModel.scene.clone();
 
-            this.pistol1.setBarrelEnd(pistolModel1.children[0]);
-            this.pistol2.setBarrelEnd(pistolModel2.children[0]);
+        const pistolModel2 = pistolModel.clone()
+        this.pistol1.setBarrelEnd(pistolModel.children[0]);
+        this.pistol2.setBarrelEnd(pistolModel2.children[0]);
+        this.controllerGrip1.add( pistolModel );
+        this.controllerGrip2.add( pistolModel2 );
 
-            this.controllerGrip1.add( pistolModel1 );
-            this.controllerGrip2.add( pistolModel2 );
-        });
         this.scene.add( this.controllerGrip1 );
         this.scene.add( this.controllerGrip2 );
     }
