@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { VRButton } from "./plugins/VRButton";
+import { VRButton } from "three/examples/jsm/webxr/VRButton.js";
 import { BoxLineGeometry } from "./plugins/BoxLineGeometry";
 import Player from "./player";
 import AssetStore from "./util/AssetStore";
