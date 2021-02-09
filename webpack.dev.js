@@ -8,6 +8,8 @@ module.exports = merge(common, {
   devServer: {
     contentBase: "./",
     watchContentBase: true,
-    open: "Google Chrome", // use "chrome" for PC
+    open: "chrome", // use "chrome" for PC
+    openPage: 'http://localhost:8080',
+    host: '0.0.0.0', // host on local network (Use PC's ip, "ipconfig" in cmd)
   },
 });

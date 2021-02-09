@@ -8,12 +8,13 @@
     "> 1%",
     "maintained node versions",
     "not dead"
-],
-"scripts": {
+  ],
+  "scripts": {
     "start": "webpack-dev-server --config webpack.dev.js",
+    "start:https": "webpack-dev-server --https --config webpack.dev.js",
     "webpack:watch": "webpack --watch --config webpack.dev.js",
     "webpack:build": "webpack --config webpack.prod.js  --optimize-minimize"
-},
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JoseMiralles/VR-Shooter.git"
@@ -43,5 +44,9 @@
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0",
     "webpack-merge": "^4.2.2"
+  },
+  "dependencies": {
+    "regenerator-runtime": "^0.13.7",
+    "three": "^0.125.2"
   }
 }

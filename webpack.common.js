@@ -58,6 +58,17 @@ module: {
         ],
     },
     {
+        test: /\.(glb|gltf)$/,
+        use: [{
+            loader: "file-loader",
+            options: {
+                name: "[name].[ext]",
+                outputPath: "assets/",
+                publicPath: "assets/"
+            }
+        }],
+    },
+    {
         test: /\.scss/,
         use: [
         {

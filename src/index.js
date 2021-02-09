@@ -1,5 +1,10 @@
 import "./styles/index.scss";
+import "regenerator-runtime/runtime.js";
+
+import Game from "./scripts/game";
 
 window.addEventListener("DOMContentLoaded", () => {
-    console.log("loaded!");
+    const game = new Game(
+        document.getElementById("game-window")
+    );
 });
