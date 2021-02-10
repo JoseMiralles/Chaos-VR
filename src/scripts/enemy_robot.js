@@ -11,9 +11,12 @@ export default class EnemyRobot extends Object3D {
         this.health = 100;
         this.distance = 4 + (Math.random() * 6);
         this.clockwise = Math.random() > 0.5; 
+
+        this.tick = this.MainTick;
     }
 
-    tick( deltaTime ){
+    // Main tick that runs once per frame.
+    MainTick( deltaTime, alive = true ){
         if (this.clockwise) {
             this.pos += this.speed * deltaTime;
         } else {
@@ -25,7 +28,23 @@ export default class EnemyRobot extends Object3D {
             Math.sin(this.pos) * this.distance
         );
 
-        this.lookAt(0, 2 ,0);
+        if (alive) this.lookAt(0, 2 ,0);
+    }
+
+    // Tiking get's delegate to this function when an enemy dies.
+    deathTick( deltaTime ){
+        this.height -= 10 * deltaTime;
+        this.rotateZ(
+            this.clockwise ?
+            (deltaTime * this.deathSpinSpeed) :
+            - (deltaTime * this.deathSpinSpeed)
+        );
+        this.MainTick( deltaTime, false );
+
+        // Remove enemy once it reaches the bottom.
+        if ( this.height <= 0 ){
+            this.parent.remove(this);
+        }
     }
 
     applyDamage( damage ){
@@ -34,7 +53,8 @@ export default class EnemyRobot extends Object3D {
     }
 
     destroy(){
-        this.parent.remove(this);
+        this.deathSpinSpeed = Math.random() * 10;
+        this.tick = this.deathTick;
     }
 
 }
