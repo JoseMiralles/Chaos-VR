@@ -7,7 +7,7 @@ export default class EnemyRobot extends Object3D {
         this.add(model);
         this.pos = Math.random() * 1000;
         this.height = 2 + (Math.random() * 4);
-        this.speed = Math.random();
+        this.speed = 0.3 + Math.random();
         this.health = 100;
         this.distance = 4 + (Math.random() * 6);
         this.clockwise = Math.random() > 0.5; 
@@ -25,7 +25,7 @@ export default class EnemyRobot extends Object3D {
             Math.sin(this.pos) * this.distance
         );
 
-        this.lookAt(0,0,0);
+        this.lookAt(0, 2 ,0);
     }
 
     applyDamage( damage ){

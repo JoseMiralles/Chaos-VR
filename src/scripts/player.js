@@ -6,13 +6,13 @@ export default class Player {
         this.scene = scene;
         this.renderer = renderer;
 
-        this.setupWeapons( enemyGroup );
+        this.setupWeapons( enemyGroup, assetStore.shotModel );
         this.setupControllers(assetStore.pistolModel);
     }
 
-    setupWeapons( enemyGroup ){
-        this.pistol1 = new Pistol( this.scene, enemyGroup );
-        this.pistol2 = new Pistol( this.scene, enemyGroup );
+    setupWeapons( enemyGroup, shotModel ){
+        this.pistol1 = new Pistol( this.scene, enemyGroup, shotModel );
+        this.pistol2 = new Pistol( this.scene, enemyGroup, shotModel );
     }
 
     setupControllers(pistolModel){

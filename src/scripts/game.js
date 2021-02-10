@@ -34,6 +34,8 @@ export default class Game {
         light.position.set( 1,1,1 ).normalize();
         this.scene.add(light);
 
+        this.scene.add(this.assetStore.enviroment);
+
         this.renderer = new THREE.WebGL1Renderer( { antialias: true } ); //TODO: test performance without antialiasing.
         this.renderer.setPixelRatio( window.devicePixelRatio );
         this.renderer.setSize( window.innerWidth, window.innerHeight );
