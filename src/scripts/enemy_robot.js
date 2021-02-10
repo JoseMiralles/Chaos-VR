@@ -1,25 +1,58 @@
 import * as THREE from "three";
+import EnemyProjectile from "./enemy_projetile";
 
 export default class EnemyRobot extends THREE.Object3D {
 
-    constructor(model){
+    constructor(model, projectileGroup){
         super();
         this.robotModel = model;
+        this.cannonEnd = this.robotModel.children[0];
         this.add(this.robotModel);
         this.angle = Math.random() * 1000;
         this.height = 2 + (Math.random() * 4);
         this.speed = 0.3 + Math.random();
         this.health = 100;
         this.distance = 4 + (Math.random() * 6);
-        this.clockwise = Math.random() > 0.5; 
+        this.clockwise = Math.random() > 0.5;
+
+        // Begin firing interval;
+        this.projectileGroup = projectileGroup;
+        this.beginShootingInterval();
 
         // Delegate initial ticking function.
-        this.tick = this.MainTick;
+        this.tick = this.mainTick;
         this.onDeath = ()=>{};
     }
 
+    beginShootingInterval(  ){
+
+        const shootingInterval = 2000 + (Math.random() * 10000);
+        const sphereGeometry = new THREE.IcosahedronGeometry( 0.1, 0 );
+        const material = new THREE.MeshLambertMaterial({
+            color: 0xfff700, emissive: 0xfff700
+        });
+
+        this.shootingInterval = setInterval(() => {
+
+            const position = new THREE.Vector3();
+            position.setFromMatrixPosition( this.cannonEnd.matrixWorld );
+            const quaternion = new THREE.Quaternion();
+            this.cannonEnd.getWorldQuaternion( quaternion );
+            
+            this.projectileGroup.add(
+                new EnemyProjectile(
+                    sphereGeometry.clone(),
+                    material,
+                    quaternion,
+                    position
+                )
+            );
+
+        }, shootingInterval);
+    }
+
     // Main tick that runs once per frame.
-    MainTick( deltaTime, playerPosition = {x: 0, y: 2, z: 0}, alive = true ){
+    mainTick( deltaTime, playerPosition, alive = true ){
         if (this.clockwise) {
             this.angle += this.speed * deltaTime;
         } else {
@@ -45,7 +78,7 @@ export default class EnemyRobot extends THREE.Object3D {
             - (deltaTime * this.deathSpinSpeed)
         );
         // Call original ticking function to continue trajectory.
-        this.MainTick( deltaTime, playerPosition, false );
+        this.mainTick( deltaTime, playerPosition, false );
 
         // Remove enemy once it reaches the bottom.
         if ( this.height <= 0 ){
@@ -75,6 +108,7 @@ export default class EnemyRobot extends THREE.Object3D {
 
             setTimeout(() => {
                 // Remove enemy after some time.
+                clearInterval( this.shootingInterval );
                 this.onDeath();
                 this.parent.remove(this);
             }, 500);

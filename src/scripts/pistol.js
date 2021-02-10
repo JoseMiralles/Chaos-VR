@@ -2,7 +2,7 @@ import * as THREE from "three";
 
 export default class Pistol {
 
-    /* A pistol object, takes in a scene objet which could be a group instead of the main scene. */
+    /* A pistol object, takes in a scene object which could be a group instead of the main scene. */
     constructor( scene, enemyGroup, shotModel ){
         this.rayCaster = new THREE.Raycaster();
         this.tempMatrix = new THREE.Matrix4();

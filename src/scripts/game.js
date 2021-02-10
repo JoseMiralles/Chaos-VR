@@ -49,17 +49,16 @@ export default class Game {
     }
 
     setupEnemySpawner( options ){
-        this.enemyGroup = new THREE.Group();
-        this.scene.add(this.enemyGroup);
         this.enemySpawner = new EnemySpawner(
-            this.enemyGroup,
             this.assetStore.robot1,
             options.limit
         );
+        this.scene.add(this.enemySpawner.enemyGroup);
+        this.scene.add(this.enemySpawner.projectileGroup);
     }
 
     setupPlayer(){
-        this.player = new Player( this.scene, this.renderer, this.assetStore, this.enemyGroup );
+        this.player = new Player( this.scene, this.renderer, this.assetStore, this.enemySpawner.enemyGroup );
     }
 
     onWindowResize(){
@@ -79,8 +78,11 @@ export default class Game {
 
         // * 0.8 slows down the simulation.
         const delta = this.clock.getDelta() * 0.8;
-
-        this.enemyGroup.children.forEach( child => child.tick( delta, playerPosition ) );
+        
+        this.enemySpawner.enemyGroup.children.forEach(
+            enemy => enemy.tick( delta, playerPosition ) );
+        this.enemySpawner.projectileGroup.children.forEach(
+            projectile => projectile.tick( delta, playerPosition ) );
 
         this.renderer.render( this.scene, this.camera );
 
