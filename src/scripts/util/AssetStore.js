@@ -7,8 +7,8 @@ import assets from "../../../meshes/assets.glb";
 export default class AssetStore {
 
     constructor( callback ){
-        const loader = new GLTFLoader();
-        loader.load("/dist/" + assets, (model) => {
+        const gltfloader = new GLTFLoader();
+        gltfloader.load("/dist/" + assets, (model) => {
 
             this.pistolModel = model.scenes[0].children[0];
             this.robot1 = model.scenes[0].children[1];

@@ -14,7 +14,7 @@ export default class Game {
         // Load 3d assets, initialize game, and start animation loop.
         this.assetStore = new AssetStore( () => {
             this.innitializeGame(HTMLElement);
-            this.setupEnemySpawner({limit: 3});
+            this.setupEnemySpawner({limit: 5});
             this.setupPlayer();
             this.animate();
         });
@@ -74,11 +74,13 @@ export default class Game {
 
     // Runs once every frame.
     tick(){
+        const playerPosition = new THREE.Vector3();
+        this.camera.getWorldPosition( playerPosition );
 
         // * 0.8 slows down the simulation.
         const delta = this.clock.getDelta() * 0.8;
 
-        this.enemyGroup.children.forEach( child => child.tick(delta) );
+        this.enemyGroup.children.forEach( child => child.tick( delta, playerPosition ) );
 
         this.renderer.render( this.scene, this.camera );
 
