@@ -7,7 +7,7 @@ export default class EnemyProjectile extends THREE.Mesh {
 
         this.position.copy( position );
         this.userData.velocity = new THREE.Vector3();
-        this.userData.velocity.z = 10;
+        this.userData.velocity.z = 5;
         this.userData.velocity.applyQuaternion( quaternion );
     }
 
@@ -18,11 +18,12 @@ export default class EnemyProjectile extends THREE.Mesh {
         this.position.x += this.userData.velocity.x * delta;
 
         // TODO: Check for collision with user.
+        
 
         // TODO: Check if projectile is too high.
-        // if ( this.position.z <= 0 ) {
-        //     this.destroyProjectile();
-        // }
+        if ( this.position.y <= 0 || this.position.y >= 10 ) {
+            this.destroyProjectile();
+        }
 
     }
 

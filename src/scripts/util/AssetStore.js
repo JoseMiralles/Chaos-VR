@@ -1,6 +1,6 @@
 /* Jose Miralles, this loads all assets from a single .glb file */
 
-import { MeshBasicMaterial, MeshLambertMaterial } from "three";
+import { MeshLambertMaterial } from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import assets from "../../../meshes/assets.glb";
 
@@ -15,7 +15,7 @@ export default class AssetStore {
             this.enviroment = model.scenes[0].children[2];
             this.shotModel = model.scenes[0].children[3];
             this.shotModel.material = new MeshLambertMaterial
-                ({ color: 0xfff700, emissive: 0xfff700 });
+                ({ emissive: 0xfff700, color: 0xfff700 });
 
             callback( this );
         });

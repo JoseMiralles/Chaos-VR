@@ -29,7 +29,7 @@ export default class EnemyRobot extends THREE.Object3D {
         const shootingInterval = 2000 + (Math.random() * 10000);
         const sphereGeometry = new THREE.IcosahedronGeometry( 0.1, 0 );
         const material = new THREE.MeshLambertMaterial({
-            color: 0xfff700, emissive: 0xfff700
+            color: 0xffffff
         });
 
         this.shootingInterval = setInterval(() => {
@@ -99,8 +99,8 @@ export default class EnemyRobot extends THREE.Object3D {
             // Begin explosion
             this.remove( this.robotModel );
             const sphere = new THREE.SphereGeometry( 0.8, 10, 10 );
-            const material = new THREE.MeshLambertMaterial
-                ({ emissive: 0xfff700 });
+            const material = new THREE.MeshBasicMaterial
+                ({ color: 0xffffff });
             this.explosion = new THREE.Mesh( sphere, material );
             this.add( this.explosion );
             this.explosionGrowth = 6;
