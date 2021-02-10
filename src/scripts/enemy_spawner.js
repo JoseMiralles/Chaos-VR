@@ -2,30 +2,28 @@ import EnemyRobot from "./enemy_robot";
 
 export default class EnemySpawner {
 
-    constructor(room, robotAsset, limit){
-        this.room = room;
+    constructor(enemyGroup, robotAsset, smallEnemyLimit){
+        this.enemyGroup = enemyGroup;
         this.robotAsset = robotAsset;
-        this.limit = limit;
+        this.smallEnemyCounter = { limit: smallEnemyLimit, count: 0 };
         this.startSpawner();
     }
 
     startSpawner(){
         setInterval(() => {
 
-            const difference = this.limit - this.room.children.length;
+            const smallEnemyEmptySpots = this.smallEnemyCounter.limit - this.smallEnemyCounter.count;
 
-            if ( difference > 0 ){
-                for ( let i = 0; i <= difference - 1; i++ ){
-                    this.room.add(
-                        new EnemyRobot( this.robotAsset.clone() )
-                    );
+            if ( smallEnemyEmptySpots > 0 ){
+                for ( let i = 0; i <= smallEnemyEmptySpots - 1; i++ ){
+                    const bot = new EnemyRobot( this.robotAsset.clone() );
+                    this.smallEnemyCounter.count ++;
+                    bot.onDeath = () => { this.smallEnemyCounter.count -- };
+                    this.enemyGroup.add( bot );
                 }
             }
 
         }, 2000);
     }
 
-    setLimit(newLimit){
-        this.limit = newLimit;
-    }
 }

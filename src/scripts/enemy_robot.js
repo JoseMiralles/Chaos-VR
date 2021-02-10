@@ -15,6 +15,7 @@ export default class EnemyRobot extends THREE.Object3D {
 
         // Delegate initial ticking function.
         this.tick = this.MainTick;
+        this.onDeath = ()=>{};
     }
 
     // Main tick that runs once per frame.
@@ -36,7 +37,8 @@ export default class EnemyRobot extends THREE.Object3D {
     // Tiking get's delegate to this function when an enemy dies.
     deathTick( deltaTime, playerPosition ){
         // Make character fall of the sky while spinning.
-        this.height -= 10 * deltaTime;
+        this.height -= this.fallSpeed * deltaTime;
+        this.fallSpeed += (20 * deltaTime);
         this.rotateZ(
             this.clockwise ?
             (deltaTime * this.deathSpinSpeed) :
@@ -73,6 +75,7 @@ export default class EnemyRobot extends THREE.Object3D {
 
             setTimeout(() => {
                 // Remove enemy after some time.
+                this.onDeath();
                 this.parent.remove(this);
             }, 500);
     }
@@ -86,6 +89,7 @@ export default class EnemyRobot extends THREE.Object3D {
         // Disable damage.
         this.applyDamage = ()=>{};
         this.deathSpinSpeed = Math.random() * 10;
+        this.fallSpeed = 0;
         this.tick = this.deathTick;
     }
 
