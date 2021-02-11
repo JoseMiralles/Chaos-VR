@@ -1,8 +1,9 @@
 import * as THREE from "three";
-import { VRButton } from "./plugins/VRButton";
+import { VRButton } from "three/examples/jsm/webxr/VRButton.js";
 import { BoxLineGeometry } from "./plugins/BoxLineGeometry";
 import Player from "./player";
 import AssetStore from "./util/AssetStore";
+import EnemySpawner from "./enemy_spawner";
 
 export default class Game {
 
@@ -11,8 +12,10 @@ export default class Game {
         this.clock = new THREE.Clock();
 
         // Load 3d assets, initialize game, and start animation loop.
-        this.assetStore = new AssetStore(()=>{
+        this.assetStore = new AssetStore( () => {
             this.innitializeGame(HTMLElement);
+            this.setupEnemySpawner({limit: 5});
+            this.setupPlayer();
             this.animate();
         });
     }
@@ -21,16 +24,8 @@ export default class Game {
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color( 0x1f1f1f );
 
-        this.camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 10 );
+        this.camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 500 );
         this.camera.position.set(0, 1.6, 3);
-
-        // TODO: switch to a better enviroment.
-        this.room = new THREE.LineSegments(
-            new BoxLineGeometry( 6, 6, 6, 10, 10, 10 ),
-            new THREE.LineBasicMaterial( { color: 0x808080  } )
-        );
-        this.room.geometry.translate(0, 3, 0);
-        this.scene.add( this.room );
 
         // Setup lights
         this.scene.add( new THREE.HemisphereLight( 0x606060, 0x404040 ) );
@@ -38,6 +33,8 @@ export default class Game {
         const light = new THREE.DirectionalLight( 0xffffff  );
         light.position.set( 1,1,1 ).normalize();
         this.scene.add(light);
+
+        this.scene.add(this.assetStore.enviroment);
 
         this.renderer = new THREE.WebGL1Renderer( { antialias: true } ); //TODO: test performance without antialiasing.
         this.renderer.setPixelRatio( window.devicePixelRatio );
@@ -48,9 +45,20 @@ export default class Game {
         HTMLElement.appendChild( this.renderer.domElement );
         HTMLElement.appendChild( VRButton.createButton( this.renderer ) );
 
-        this.player = new Player( this.scene, this.renderer, this.assetStore );
-
         window.addEventListener( 'resize', this.onWindowResize.bind(this) );
+    }
+
+    setupEnemySpawner( options ){
+        this.enemySpawner = new EnemySpawner(
+            this.assetStore.robot1,
+            options.limit
+        );
+        this.scene.add(this.enemySpawner.enemyGroup);
+        this.scene.add(this.enemySpawner.projectileGroup);
+    }
+
+    setupPlayer(){
+        this.player = new Player( this.scene, this.renderer, this.assetStore, this.enemySpawner.enemyGroup );
     }
 
     onWindowResize(){
@@ -60,14 +68,21 @@ export default class Game {
     }
 
     animate(){
-        this.renderer.setAnimationLoop( this.render.bind(this) );
+        this.renderer.setAnimationLoop( this.tick.bind(this) );
     }
 
     // Runs once every frame.
-    render(){
+    tick(){
+        const playerPosition = new THREE.Vector3();
+        this.camera.getWorldPosition( playerPosition );
 
         // * 0.8 slows down the simulation.
         const delta = this.clock.getDelta() * 0.8;
+        
+        this.enemySpawner.enemyGroup.children.forEach(
+            enemy => enemy.tick( delta, playerPosition ) );
+        this.enemySpawner.projectileGroup.children.forEach(
+            projectile => projectile.tick( delta, playerPosition ) );
 
         this.renderer.render( this.scene, this.camera );
 
