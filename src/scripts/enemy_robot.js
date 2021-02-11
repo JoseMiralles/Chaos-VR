@@ -6,7 +6,7 @@ export default class EnemyRobot extends THREE.Object3D {
     constructor(model, projectileGroup){
         super();
         this.robotModel = model;
-        this.cannonEnd = this.robotModel.children[0];
+        this.cannonEnd = this.robotModel.children[2];
         this.add(this.robotModel);
         this.angle = Math.random() * 1000;
         this.speed = 0.3 + Math.random();

@@ -45,8 +45,8 @@ export default class Pistol {
         }, 10);
 
         const target = this.rayCaster.intersectObjects( this.enemyGroup.children, true )[0];
-        if (target)
-            target.object.parent.applyDamage( this.damage );
+        if (target && target.object.parent.parent.applyDamage)
+            target.object.parent.parent.applyDamage( this.damage );
     }
 
 }
