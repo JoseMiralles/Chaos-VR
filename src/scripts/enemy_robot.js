@@ -14,8 +14,11 @@ export default class EnemyRobot extends THREE.Object3D {
         this.health = 100;
         this.distance = 4 + (Math.random() * 6);
         this.clockwise = Math.random() > 0.5;
+        this.xOffset = -5 + Math.random() * 10;
+        this.yOffset = -5 + Math.random() * 10;
 
         // Begin firing interval;
+        this.shootingIntervalTime = 2000 + (Math.random() * 10000);
         this.projectileGroup = projectileGroup;
         this.beginShootingInterval();
 
@@ -24,31 +27,34 @@ export default class EnemyRobot extends THREE.Object3D {
         this.onDeath = ()=>{};
     }
 
+    // Handles shooting.
     beginShootingInterval(  ){
-
-        const shootingInterval = 2000 + (Math.random() * 10000);
         const sphereGeometry = new THREE.IcosahedronGeometry( 0.1, 0 );
         const material = new THREE.MeshLambertMaterial({
             color: 0xffffff
         });
 
-        this.shootingInterval = setInterval(() => {
+        // Using this instead of "setInterval" to be able to change the time dynamically.
+        const internalCallback = () => {
+            setTimeout(() => {
+                const position = new THREE.Vector3();
+                position.setFromMatrixPosition( this.cannonEnd.matrixWorld );
+                const quaternion = new THREE.Quaternion();
+                this.cannonEnd.getWorldQuaternion( quaternion );
+                
+                this.projectileGroup.add(
+                    new EnemyProjectile(
+                        sphereGeometry.clone(),
+                        material,
+                        quaternion,
+                        position
+                    )
+                );
+                internalCallback();
+            }, this.shootingIntervalTime);
+        }
 
-            const position = new THREE.Vector3();
-            position.setFromMatrixPosition( this.cannonEnd.matrixWorld );
-            const quaternion = new THREE.Quaternion();
-            this.cannonEnd.getWorldQuaternion( quaternion );
-            
-            this.projectileGroup.add(
-                new EnemyProjectile(
-                    sphereGeometry.clone(),
-                    material,
-                    quaternion,
-                    position
-                )
-            );
-
-        }, shootingInterval);
+        internalCallback();
     }
 
     // Main tick that runs once per frame.
@@ -58,10 +64,10 @@ export default class EnemyRobot extends THREE.Object3D {
         } else {
             this.angle -= this.speed * deltaTime;
         }
-        this.position.set(
-            Math.cos(this.angle) * this.distance,
+        this.position.set (
+            Math.cos(this.angle) * this.distance + this.xOffset,
             this.height,
-            Math.sin(this.angle) * this.distance
+            Math.sin(this.angle) * this.distance + this.yOffset
         );
 
         if (alive) this.lookAt(playerPosition);
@@ -119,9 +125,19 @@ export default class EnemyRobot extends THREE.Object3D {
         if (this.health <= 0) this.destroy();
     }
 
+    // Runs immideatly after this robot runs out of health.
+    // It deletegates ticking to the deathTick function.
     destroy(){
         // Disable damage.
         this.applyDamage = ()=>{};
+
+        // Make some robots shoot rapidly when killed.
+        // Only for enemies who are far.
+        if (this.distance > 6 && Math.random() > 0.7){
+            this.shootingIntervalTime = 100;
+            this.beginShootingInterval();
+        }
+
         this.deathSpinSpeed = Math.random() * 10;
         this.fallSpeed = 0;
         this.tick = this.deathTick;
