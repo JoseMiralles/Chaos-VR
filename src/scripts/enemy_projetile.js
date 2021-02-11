@@ -20,8 +20,8 @@ export default class EnemyProjectile extends THREE.Mesh {
         // TODO: Check for collision with user.
         
 
-        // TODO: Check if projectile is too high.
-        if ( this.position.y <= 0 || this.position.y >= 10 ) {
+        // TODO: Check if projectile is too high or far behind.
+        if ( this.position.y <= 0 || this.position.y >= 10 || this.position.z >= 10 ) {
             this.destroyProjectile();
         }
 

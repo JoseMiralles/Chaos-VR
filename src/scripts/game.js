@@ -22,7 +22,7 @@ export default class Game {
 
     innitializeGame(HTMLElement){
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color( 0x1f1f1f );
+        this.scene.background = new THREE.Color( 0x5f2b2b );
 
         this.camera = new THREE.PerspectiveCamera(
             75, window.innerWidth / window.innerHeight, 0.1, 500
@@ -38,7 +38,7 @@ export default class Game {
 
         this.scene.add(this.assetStore.enviroment);
 
-        this.renderer = new THREE.WebGL1Renderer( { antialias: true } ); //TODO: test performance without antialiasing.
+        this.renderer = new THREE.WebGL1Renderer( { antialias: true } ); //TODO: Make this a toggable setting.
         this.renderer.setPixelRatio( window.devicePixelRatio );
         this.renderer.setSize( window.innerWidth, window.innerHeight );
         this.renderer.outputEncoding = THREE.sRGBEncoding;
