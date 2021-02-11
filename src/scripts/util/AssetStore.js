@@ -12,10 +12,10 @@ export default class AssetStore {
 
             this.pistolModel = model.scenes[0].children[0];
             this.robot1 = model.scenes[0].children[1];
-            this.enviroment = model.scenes[0].children[2];
-            this.shotModel = model.scenes[0].children[3];
+            this.enviroment = model.scenes[0].children[3];
+            this.shotModel = model.scenes[0].children[2];
             this.shotModel.material = new MeshLambertMaterial
-                ({ emissive: 0xfff700, color: 0xfff700 });
+                ({ emissive: 0xffffff, color: 0xffffff });
 
             callback( this );
         });
