@@ -6,7 +6,7 @@ export default class Pistol {
     constructor( scene, enemyGroup, shotModel ){
         this.rayCaster = new THREE.Raycaster();
         this.tempMatrix = new THREE.Matrix4();
-        this.damage = 55;
+        this.damage = 26;
         this.scene = scene;
         this.enemyGroup = enemyGroup;
         this.shotModel = shotModel;

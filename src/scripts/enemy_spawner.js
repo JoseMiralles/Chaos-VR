@@ -5,8 +5,13 @@ import EnemyRobot from "./enemy_robot";
 export default class EnemySpawner {
 
     constructor(robotAsset, smallEnemyLimit){
+        
+        // Group in which enemies are spawned.
         this.enemyGroup = new THREE.Group();
+        this.enemyGroup.position.z = -10;
+        // Group in which enemy projectiles are spawned.
         this.projectileGroup = new THREE.Group();
+
         this.robotAsset = robotAsset;
         this.smallEnemyCounter = { limit: smallEnemyLimit, count: 0 };
         this.startSpawner();

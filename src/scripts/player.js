@@ -6,8 +6,18 @@ export default class Player {
         this.scene = scene;
         this.renderer = renderer;
 
+        this.health = 100;
+
         this.setupWeapons( enemyGroup, assetStore.shotModel );
         this.setupControllers(assetStore.pistolModel);
+    }
+
+    receiveDamage( damage ){
+        this.health -= damage;
+
+        if ( this.health <= 0 ){
+            // Game over
+        }
     }
 
     setupWeapons( enemyGroup, shotModel ){

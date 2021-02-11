@@ -24,8 +24,10 @@ export default class Game {
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color( 0x1f1f1f );
 
-        this.camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 500 );
-        this.camera.position.set(0, 1.6, 3);
+        this.camera = new THREE.PerspectiveCamera(
+            75, window.innerWidth / window.innerHeight, 0.1, 500
+            );
+        this.camera.position.set(0, 1.6, 0);
 
         // Setup lights
         this.scene.add( new THREE.HemisphereLight( 0x606060, 0x404040 ) );
