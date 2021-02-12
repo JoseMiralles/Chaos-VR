@@ -7,6 +7,7 @@ import assets from "../../../meshes/assets.glb";
 import shot from "../../../audio/shot.mp3";
 import botImpact from "../../../audio/botImpact.mp3";
 import botDestroyed from "../../../audio/bot_destroyed.mp3";
+import botExplosion from "../../../audio/bot_explosion.mp3";
 
 export default class AssetStore {
 
@@ -59,6 +60,13 @@ export default class AssetStore {
                 numberOfAudios: 5,
                 volume: 1
             },
+            { 
+                path: botExplosion,
+                key: "botExplosionSoundGenerator",
+                audioClass: THREE.PositionalAudio,
+                numberOfAudios: 5,
+                volume: 1
+            },
         ];
 
         filesToLoad.forEach( ( params, i ) =>
@@ -70,7 +78,7 @@ export default class AssetStore {
                 // Notify that all assets are loaded after the last sound is loaded.
                 if ( i === filesToLoad.length - 1 )
                     this.allAssetsLoadedCallback();
-            }));
+            }, null, (err) => console.log(err)));
     }
 
 }

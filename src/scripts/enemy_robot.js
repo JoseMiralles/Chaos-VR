@@ -117,6 +117,11 @@ export default class EnemyRobot extends THREE.Object3D {
             this.explosionGrowth = 6;
             this.tick = this.blowUpTick;
 
+            // Play explosion sound from correct world position.
+            const sound = this.assetStore.botExplosionSoundGenerator.getNext();
+            this.getWorldPosition( sound.position );
+            sound.play();
+
             setTimeout(() => {
                 // Remove enemy after some time.
                 clearInterval( this.shootingInterval );
