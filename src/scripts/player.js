@@ -6,8 +6,18 @@ export default class Player {
         this.scene = scene;
         this.renderer = renderer;
 
+        this.health = 100;
+
         this.setupWeapons( enemyGroup, assetStore.shotModel );
         this.setupControllers(assetStore.pistolModel);
+    }
+
+    receiveDamage( damage ){
+        this.health -= damage;
+
+        if ( this.health <= 0 ){
+            // Game over
+        }
     }
 
     setupWeapons( enemyGroup, shotModel ){
@@ -27,9 +37,9 @@ export default class Player {
         this.controllerGrip1 = this.renderer.xr.getControllerGrip(0);
         this.controllerGrip2 = this.renderer.xr.getControllerGrip(1);
 
-        const pistolModel2 = pistolModel.clone()
-        this.pistol1.setBarrelEnd(pistolModel.children[0]);
-        this.pistol2.setBarrelEnd(pistolModel2.children[0]);
+        const pistolModel2 = pistolModel.clone();
+        this.pistol1.setBarrelEnd(pistolModel.children[2]);
+        this.pistol2.setBarrelEnd(pistolModel2.children[2]);
         this.controllerGrip1.add( pistolModel );
         this.controllerGrip2.add( pistolModel2 );
 

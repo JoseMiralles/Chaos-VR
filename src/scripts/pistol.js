@@ -6,7 +6,7 @@ export default class Pistol {
     constructor( scene, enemyGroup, shotModel ){
         this.rayCaster = new THREE.Raycaster();
         this.tempMatrix = new THREE.Matrix4();
-        this.damage = 55;
+        this.damage = 26;
         this.scene = scene;
         this.enemyGroup = enemyGroup;
         this.shotModel = shotModel;
@@ -42,11 +42,11 @@ export default class Pistol {
 
         setTimeout(() => {
             this.scene.remove( shot );
-        }, 10);
+        }, 20);
 
         const target = this.rayCaster.intersectObjects( this.enemyGroup.children, true )[0];
-        if (target)
-            target.object.parent.applyDamage( this.damage );
+        if (target && target.object.parent.parent.applyDamage)
+            target.object.parent.parent.applyDamage( this.damage );
     }
 
 }

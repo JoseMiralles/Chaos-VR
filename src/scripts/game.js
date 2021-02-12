@@ -7,9 +7,9 @@ import EnemySpawner from "./enemy_spawner";
 
 export default class Game {
 
-    constructor( HTMLElement ){
-        this.radius = 0.01
+    constructor( HTMLElement, performanceMode = false ){
         this.clock = new THREE.Clock();
+        this.performanceMode = performanceMode;
 
         // Load 3d assets, initialize game, and start animation loop.
         this.assetStore = new AssetStore( () => {
@@ -22,21 +22,25 @@ export default class Game {
 
     innitializeGame(HTMLElement){
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color( 0x1f1f1f );
+        this.scene.background = new THREE.Color( 0x2b2c3b );
 
-        this.camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 500 );
-        this.camera.position.set(0, 1.6, 3);
+        this.camera = new THREE.PerspectiveCamera(
+            75, window.innerWidth / window.innerHeight, 0.1, 500
+            );
+        this.camera.position.set(0, 1.6, 0);
 
         // Setup lights
-        this.scene.add( new THREE.HemisphereLight( 0x606060, 0x404040 ) );
+        this.scene.add( new THREE.HemisphereLight( 0xffffff, 0xffffff ) );
 
-        const light = new THREE.DirectionalLight( 0xffffff  );
-        light.position.set( 1,1,1 ).normalize();
-        this.scene.add(light);
+        if (!this.performanceMode){
+            const light = new THREE.DirectionalLight( 0xffffff );
+            light.position.set( 0,0.5,-20 ).normalize();
+            this.scene.add(light);
+        }
 
         this.scene.add(this.assetStore.enviroment);
 
-        this.renderer = new THREE.WebGL1Renderer( { antialias: true } ); //TODO: test performance without antialiasing.
+        this.renderer = new THREE.WebGL1Renderer( { antialias: !this.performanceMode } ); //TODO: Make this a toggable setting.
         this.renderer.setPixelRatio( window.devicePixelRatio );
         this.renderer.setSize( window.innerWidth, window.innerHeight );
         this.renderer.outputEncoding = THREE.sRGBEncoding;
@@ -82,7 +86,7 @@ export default class Game {
         this.enemySpawner.enemyGroup.children.forEach(
             enemy => enemy.tick( delta, playerPosition ) );
         this.enemySpawner.projectileGroup.children.forEach(
-            projectile => projectile.tick( delta, playerPosition ) );
+            projectile => projectile.tick( delta, playerPosition, this.player ) );
 
         this.renderer.render( this.scene, this.camera );
 
