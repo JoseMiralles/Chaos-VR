@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import { VRButton } from "three/examples/jsm/webxr/VRButton.js";
-import { BoxLineGeometry } from "./plugins/BoxLineGeometry";
 import Player from "./player";
 import AssetStore from "./util/AssetStore";
 import EnemySpawner from "./enemy_spawner";
@@ -38,6 +37,7 @@ export default class Game {
             this.scene.add(light);
         }
 
+        this.assetStore.enviroment.position.z = -10;
         this.scene.add(this.assetStore.enviroment);
 
         this.renderer = new THREE.WebGL1Renderer( { antialias: !this.performanceMode } ); //TODO: Make this a toggable setting.
