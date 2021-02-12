@@ -42,7 +42,7 @@ export default class Pistol {
 
         setTimeout(() => {
             this.scene.remove( shot );
-        }, 10);
+        }, 20);
 
         const target = this.rayCaster.intersectObjects( this.enemyGroup.children, true )[0];
         if (target && target.object.parent.parent.applyDamage)

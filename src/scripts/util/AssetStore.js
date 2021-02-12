@@ -15,7 +15,7 @@ export default class AssetStore {
             this.enviroment = model.scenes[0].children[3];
             this.shotModel = model.scenes[0].children[2];
             this.shotModel.material = new MeshLambertMaterial
-                ({ emissive: 0xffffff, color: 0xffffff });
+                ({ emissive: 0xfbff00, color: 0xfbff00 });
 
             callback( this );
         });

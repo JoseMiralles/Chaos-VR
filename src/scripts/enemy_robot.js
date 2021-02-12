@@ -30,10 +30,9 @@ export default class EnemyRobot extends THREE.Object3D {
 
     // Handles shooting.
     beginShootingInterval(  ){
-        const sphereGeometry = new THREE.IcosahedronGeometry( 0.1, 0 );
-        const material = new THREE.MeshLambertMaterial({
-            color: 0xffffff
-        });
+        const sphereGeometry = new THREE.SphereGeometry( 0.1, 0, 0 );
+        const material = new THREE.MeshBasicMaterial
+            ({ color: 0x949494 });
 
         // Using this instead of "setInterval" to be able to change the time dynamically.
         const internalCallback = () => {
@@ -108,9 +107,9 @@ export default class EnemyRobot extends THREE.Object3D {
     beginExplosionAnimation(){
             // Begin explosion
             this.remove( this.robotModel );
-            const sphere = new THREE.SphereGeometry( 0.8, 10, 10 );
-            const material = new THREE.MeshBasicMaterial
-                ({ color: 0xffffff });
+            const sphere = new THREE.SphereGeometry( 0.8, 5, 5 );
+            const material = new THREE.MeshLambertMaterial
+            ({ emissive: 0xffffff });
             this.explosion = new THREE.Mesh( sphere, material );
             this.add( this.explosion );
             this.explosionGrowth = 6;
