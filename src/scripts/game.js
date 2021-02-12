@@ -86,7 +86,7 @@ export default class Game {
         this.enemySpawner.enemyGroup.children.forEach(
             enemy => enemy.tick( delta, playerPosition ) );
         this.enemySpawner.projectileGroup.children.forEach(
-            projectile => projectile.tick( delta, playerPosition ) );
+            projectile => projectile.tick( delta, playerPosition, this.player ) );
 
         this.renderer.render( this.scene, this.camera );
 
