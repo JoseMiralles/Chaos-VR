@@ -4,7 +4,7 @@ import EnemyRobot from "./enemy_robot";
 
 export default class EnemySpawner {
 
-    constructor(robotAsset){
+    constructor(assetStore){
 
         // Group in which enemies are spawned.
         this.enemyGroup = new THREE.Group();
@@ -14,7 +14,7 @@ export default class EnemySpawner {
 
         this.killCount = 0;
 
-        this.robotAsset = robotAsset;
+        this.assetStore = assetStore;
         this.smallEnemyCounter = { limit: 1, count: 0 };
         this.startSpawner();
     }
@@ -27,7 +27,7 @@ export default class EnemySpawner {
             if ( smallEnemyEmptySpots > 0 ){
                 for ( let i = 0; i <= smallEnemyEmptySpots - 1; i++ ){
                     const bot = new EnemyRobot
-                        ( this.robotAsset.clone(), this.projectileGroup );
+                        ( this.assetStore.robot1.clone(), this.projectileGroup, this.assetStore );
                     this.smallEnemyCounter.count ++;
                     bot.onDeath = () => {
                         this.smallEnemyCounter.count --;

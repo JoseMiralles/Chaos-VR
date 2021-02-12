@@ -10,10 +10,10 @@ export default class Game {
         this.clock = new THREE.Clock();
         this.performanceMode = performanceMode;
 
-        // Load 3d assets, initialize game, and start animation loop.
-        this.assetStore = new AssetStore( () => {
+        // Load files, initialize game, and start animation loop.
+        this.assetStore = new AssetStore( ( arg ) => {
             this.innitializeGame(HTMLElement);
-            this.setupEnemySpawner({limit: 5});
+            this.setupEnemySpawner();
             this.setupPlayer();
             this.animate();
         });
@@ -27,6 +27,7 @@ export default class Game {
             75, window.innerWidth / window.innerHeight, 0.1, 500
             );
         this.camera.position.set(0, 1.6, 0);
+        this.camera.add( this.assetStore.listener ); // Add audio listener to camera.
 
         // Setup lights
         this.scene.add( new THREE.HemisphereLight( 0xffffff, 0xffffff ) );
@@ -52,17 +53,20 @@ export default class Game {
         window.addEventListener( 'resize', this.onWindowResize.bind(this) );
     }
 
-    setupEnemySpawner( options ){
+    setupEnemySpawner(){
         this.enemySpawner = new EnemySpawner(
-            this.assetStore.robot1,
-            options.limit
+            this.assetStore
         );
         this.scene.add(this.enemySpawner.enemyGroup);
         this.scene.add(this.enemySpawner.projectileGroup);
     }
 
     setupPlayer(){
-        this.player = new Player( this.scene, this.renderer, this.assetStore, this.enemySpawner.enemyGroup );
+        this.player = new Player(
+            this.scene,
+            this.renderer,
+            this.assetStore,
+            this.enemySpawner.enemyGroup );
     }
 
     onWindowResize(){

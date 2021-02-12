@@ -3,18 +3,20 @@ import EnemyProjectile from "./enemy_projetile";
 
 export default class EnemyRobot extends THREE.Object3D {
 
-    constructor(model, projectileGroup){
+    constructor(model, projectileGroup, assetStore){
         super();
         this.robotModel = model;
         this.cannonEnd = this.robotModel.children[2];
         this.add(this.robotModel);
         this.angle = Math.random() * 1000;
         this.speed = 0.3 + Math.random();
-        this.health = 50;
+        this.health = 100;
         this.distance = 4 + (Math.random() * 6);
         this.clockwise = Math.random() > 0.5;
         this.xOffset = -10 + Math.random() * 20;
         this.zOffset = -3 + Math.random() * 6;
+
+        this.assetStore = assetStore;
 
         // Begin firing interval;
         this.shootingIntervalTime = 2000 + (Math.random() * 10000);
@@ -25,18 +27,18 @@ export default class EnemyRobot extends THREE.Object3D {
         this.tick = this.mainTick;
         this.onDeath = ()=>{};
 
-        this.position.y = 2 + (Math.random() * 4);
+        this.position.y = 1 + (Math.random() * 6);
     }
 
     // Handles shooting.
     beginShootingInterval(  ){
-        const sphereGeometry = new THREE.SphereGeometry( 0.1, 0, 0 );
+        const sphereGeometry = new THREE.BoxGeometry( 0.1, 0.1, 0.1 );
         const material = new THREE.MeshBasicMaterial
             ({ color: 0x949494 });
 
         // Using this instead of "setInterval" to be able to change the time dynamically.
         const internalCallback = () => {
-            setTimeout(() => {
+            this.shootingInterval = setTimeout(() => {
                 const position = new THREE.Vector3();
                 position.setFromMatrixPosition( this.cannonEnd.matrixWorld );
                 const quaternion = new THREE.Quaternion();
@@ -115,6 +117,11 @@ export default class EnemyRobot extends THREE.Object3D {
             this.explosionGrowth = 6;
             this.tick = this.blowUpTick;
 
+            // Play explosion sound from correct world position.
+            const sound = this.assetStore.botExplosionSoundGenerator.getNext();
+            this.getWorldPosition( sound.position );
+            sound.play();
+
             setTimeout(() => {
                 // Remove enemy after some time.
                 clearInterval( this.shootingInterval );
@@ -124,6 +131,12 @@ export default class EnemyRobot extends THREE.Object3D {
     }
 
     applyDamage( damage ){
+
+        // Play impact sound from correct world position.
+        const sound = this.assetStore.botImpactSoundGenerator.getNext();
+        this.getWorldPosition( sound.position );
+        sound.play();
+
         this.health -= damage;
         if (this.health <= 0) this.destroy();
     }
@@ -134,9 +147,14 @@ export default class EnemyRobot extends THREE.Object3D {
         // Disable damage.
         this.applyDamage = ()=>{};
 
+        // Play shutdown sound
+        const sound = this.assetStore.botDestroyedSoundGenerator.getNext();
+        this.getWorldPosition( sound.position );
+        sound.play();
+
         // Make some robots shoot rapidly when killed.
         // Only for enemies who are far.
-        if (this.distance > 6 && Math.random() > 0.7){
+        if (Math.random() > 0.9){
             this.shootingIntervalTime = 100;
             this.beginShootingInterval();
         }

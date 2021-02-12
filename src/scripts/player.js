@@ -8,7 +8,7 @@ export default class Player {
 
         this.health = 100;
 
-        this.setupWeapons( enemyGroup, assetStore.shotModel );
+        this.setupWeapons( enemyGroup, assetStore );
         this.setupControllers(assetStore.pistolModel);
     }
 
@@ -20,9 +20,9 @@ export default class Player {
         }
     }
 
-    setupWeapons( enemyGroup, shotModel ){
-        this.pistol1 = new Pistol( this.scene, enemyGroup, shotModel );
-        this.pistol2 = new Pistol( this.scene, enemyGroup, shotModel );
+    setupWeapons( enemyGroup, assetStore ){
+        this.pistol1 = new Pistol( this.scene, enemyGroup, assetStore );
+        this.pistol2 = new Pistol( this.scene, enemyGroup, assetStore );
     }
 
     setupControllers(pistolModel){

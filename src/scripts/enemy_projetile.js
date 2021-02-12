@@ -6,6 +6,7 @@ export default class EnemyProjectile extends THREE.Mesh {
         super( geometry, material );
 
         this.position.copy( position );
+        this.setRotationFromQuaternion(quaternion);
         this.userData.velocity = new THREE.Vector3();
         this.userData.velocity.z = 5;
         this.userData.velocity.applyQuaternion( quaternion );
