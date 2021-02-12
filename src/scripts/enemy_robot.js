@@ -10,7 +10,7 @@ export default class EnemyRobot extends THREE.Object3D {
         this.add(this.robotModel);
         this.angle = Math.random() * 1000;
         this.speed = 0.3 + Math.random();
-        this.health = 50;
+        this.health = 100;
         this.distance = 4 + (Math.random() * 6);
         this.clockwise = Math.random() > 0.5;
         this.xOffset = -10 + Math.random() * 20;
@@ -126,7 +126,12 @@ export default class EnemyRobot extends THREE.Object3D {
     }
 
     applyDamage( damage ){
-        this.assetStore.botImpactSoundGenerator.play();
+
+        // Play impact sound from correct world position.
+        const sound = this.assetStore.botImpactSoundGenerator.getNext();
+        this.getWorldPosition( sound.position );
+        sound.play();
+
         this.health -= damage;
         if (this.health <= 0) this.destroy();
     }
@@ -136,6 +141,11 @@ export default class EnemyRobot extends THREE.Object3D {
     destroy(){
         // Disable damage.
         this.applyDamage = ()=>{};
+
+        // Play shutdown sound
+        const sound = this.assetStore.botDestroyedSoundGenerator.getNext();
+        this.getWorldPosition( sound.position );
+        sound.play();
 
         // Make some robots shoot rapidly when killed.
         // Only for enemies who are far.

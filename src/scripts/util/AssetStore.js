@@ -6,13 +6,14 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import assets from "../../../meshes/assets.glb";
 import shot from "../../../audio/shot.mp3";
 import botImpact from "../../../audio/botImpact.mp3";
+import botDestroyed from "../../../audio/bot_destroyed.mp3";
 
 export default class AssetStore {
 
-    constructor( assetsLoadedCallback ){
+    constructor( allAssetsLoadedCallback ){
 
         this.listener = new THREE.AudioListener();
-        this.assetsLoadedCallback = assetsLoadedCallback;
+        this.allAssetsLoadedCallback = allAssetsLoadedCallback;
 
         this.load3DAssets();
     }
@@ -47,10 +48,17 @@ export default class AssetStore {
             { 
                 path: botImpact,
                 key: "botImpactSoundGenerator",
-                audioClass: THREE.Audio,
+                audioClass: THREE.PositionalAudio,
                 numberOfAudios: 20,
+                volume: 0.8
+            },
+            { 
+                path: botDestroyed,
+                key: "botDestroyedSoundGenerator",
+                audioClass: THREE.PositionalAudio,
+                numberOfAudios: 5,
                 volume: 1
-            }
+            },
         ];
 
         filesToLoad.forEach( ( params, i ) =>
@@ -61,7 +69,7 @@ export default class AssetStore {
                 
                 // Notify that all assets are loaded after the last sound is loaded.
                 if ( i === filesToLoad.length - 1 )
-                    this.assetsLoadedCallback();
+                    this.allAssetsLoadedCallback();
             }));
     }
 
@@ -76,9 +84,14 @@ class SoundGenerator {
     }
 
     play(){
-        this.array[this.pos].play();
+        this.getNext().play();
+    }
+
+    // Used for positional audio.
+    getNext(){
         this.pos ++;
         if ( this.pos > this.array.length - 1 ) this.pos = 0;
+        return this.array[this.pos];
     }
 
     populateArray( buffer, listener, audioClass, volume ){
