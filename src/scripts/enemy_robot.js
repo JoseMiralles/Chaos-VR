@@ -3,7 +3,7 @@ import EnemyProjectile from "./enemy_projetile";
 
 export default class EnemyRobot extends THREE.Object3D {
 
-    constructor(model, projectileGroup){
+    constructor(model, projectileGroup, assetStore){
         super();
         this.robotModel = model;
         this.cannonEnd = this.robotModel.children[2];
@@ -15,6 +15,8 @@ export default class EnemyRobot extends THREE.Object3D {
         this.clockwise = Math.random() > 0.5;
         this.xOffset = -10 + Math.random() * 20;
         this.zOffset = -3 + Math.random() * 6;
+
+        this.assetStore = assetStore;
 
         // Begin firing interval;
         this.shootingIntervalTime = 2000 + (Math.random() * 10000);
@@ -124,6 +126,7 @@ export default class EnemyRobot extends THREE.Object3D {
     }
 
     applyDamage( damage ){
+        this.assetStore.botImpactSoundGenerator.play();
         this.health -= damage;
         if (this.health <= 0) this.destroy();
     }

@@ -5,6 +5,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 import assets from "../../../meshes/assets.glb";
 import shot from "../../../audio/shot.mp3";
+import botImpact from "../../../audio/botImpact.mp3";
 
 export default class AssetStore {
 
@@ -36,15 +37,29 @@ export default class AssetStore {
         const audioLoader = new THREE.AudioLoader();
 
         const filesToLoad = [
-            { path: shot, key: "shotSoundGenerator", audioClass: THREE.Audio, numberOfAudios: 30 }
+            {
+                path: shot,
+                key: "shotSoundGenerator",
+                audioClass: THREE.Audio,
+                numberOfAudios: 30,
+                volume: 0.3
+            },
+            { 
+                path: botImpact,
+                key: "botImpactSoundGenerator",
+                audioClass: THREE.Audio,
+                numberOfAudios: 20,
+                volume: 1
+            }
         ];
 
         filesToLoad.forEach( ( params, i ) =>
             audioLoader.load ("/dist/" + params.path, (buffer) => {
                 this[params.key] = new SoundGenerator(
-                    buffer, this.listener, params.numberOfAudios, params.audioClass
+                    buffer, this.listener, params.numberOfAudios, params.audioClass, params.volume
                 );
                 
+                // Notify that all assets are loaded after the last sound is loaded.
                 if ( i === filesToLoad.length - 1 )
                     this.assetsLoadedCallback();
             }));
@@ -54,10 +69,10 @@ export default class AssetStore {
 
 class SoundGenerator {
 
-    constructor( buffer, listener, numberOfAudios, audioClass ){
+    constructor( buffer, listener, numberOfAudios, audioClass, volume ){
         this.array = new Array( numberOfAudios );
         this.pos = 0;
-        this.populateArray( buffer, listener, audioClass );
+        this.populateArray( buffer, listener, audioClass, volume );
     }
 
     play(){
@@ -66,11 +81,11 @@ class SoundGenerator {
         if ( this.pos > this.array.length - 1 ) this.pos = 0;
     }
 
-    populateArray( buffer, listener, audioClass ){
+    populateArray( buffer, listener, audioClass, volume ){
         for (let i = 0; i < this.array.length; i++) {
             const audio = new audioClass( listener );
             audio.setBuffer(buffer);
-            audio.setVolume( 0.5 );
+            audio.setVolume( volume );
             this.array[i] = audio;
         };
     }

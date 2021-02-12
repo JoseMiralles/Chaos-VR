@@ -55,7 +55,7 @@ export default class Game {
 
     setupEnemySpawner(){
         this.enemySpawner = new EnemySpawner(
-            this.assetStore.robot1
+            this.assetStore
         );
         this.scene.add(this.enemySpawner.enemyGroup);
         this.scene.add(this.enemySpawner.projectileGroup);
