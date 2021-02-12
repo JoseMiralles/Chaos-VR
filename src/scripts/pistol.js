@@ -3,13 +3,14 @@ import * as THREE from "three";
 export default class Pistol {
 
     /* A pistol object, takes in a scene object which could be a group instead of the main scene. */
-    constructor( scene, enemyGroup, shotModel ){
+    constructor( scene, enemyGroup, assetStore ){
         this.rayCaster = new THREE.Raycaster();
         this.tempMatrix = new THREE.Matrix4();
         this.damage = 26;
         this.scene = scene;
         this.enemyGroup = enemyGroup;
-        this.shotModel = shotModel;
+        this.shotModel = assetStore.shotModel;
+        this.shotSoundGenerator = assetStore.shotSoundGenerator;
 
         this.shoot = this.shoot.bind(this);
     }
@@ -22,10 +23,7 @@ export default class Pistol {
     // Shoots and applies damage to the target, if any.
     shoot(){
 
-        if ( !this.barrelEnd ) {
-            console.warn("This pistol doesn't have a barrel end! Assign one.");
-            return
-        }
+        this.shotSoundGenerator.play();
 
         this.tempMatrix.identity().extractRotation( this.barrelEnd.matrixWorld );
         this.rayCaster.ray.origin.setFromMatrixPosition( this.barrelEnd.matrixWorld );

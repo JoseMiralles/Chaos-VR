@@ -4,7 +4,10 @@ import "regenerator-runtime/runtime.js";
 import Game from "./scripts/game";
 
 window.addEventListener("DOMContentLoaded", () => {
-    const game = new Game(
-        document.getElementById("game-window")
-    );
+    const startButton = document.getElementById("startButton");
+    startButton.addEventListener("click", () => {
+        const game = new Game(
+            document.getElementById("game-window")
+        );
+    });
 });

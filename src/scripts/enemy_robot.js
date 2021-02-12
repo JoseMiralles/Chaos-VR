@@ -25,18 +25,18 @@ export default class EnemyRobot extends THREE.Object3D {
         this.tick = this.mainTick;
         this.onDeath = ()=>{};
 
-        this.position.y = 2 + (Math.random() * 4);
+        this.position.y = 1 + (Math.random() * 6);
     }
 
     // Handles shooting.
     beginShootingInterval(  ){
-        const sphereGeometry = new THREE.SphereGeometry( 0.1, 0, 0 );
+        const sphereGeometry = new THREE.BoxGeometry( 0.1, 0.1, 0.1 );
         const material = new THREE.MeshBasicMaterial
             ({ color: 0x949494 });
 
         // Using this instead of "setInterval" to be able to change the time dynamically.
         const internalCallback = () => {
-            setTimeout(() => {
+            this.shootingInterval = setTimeout(() => {
                 const position = new THREE.Vector3();
                 position.setFromMatrixPosition( this.cannonEnd.matrixWorld );
                 const quaternion = new THREE.Quaternion();
@@ -136,7 +136,7 @@ export default class EnemyRobot extends THREE.Object3D {
 
         // Make some robots shoot rapidly when killed.
         // Only for enemies who are far.
-        if (this.distance > 6 && Math.random() > 0.7){
+        if (Math.random() > 0.9){
             this.shootingIntervalTime = 100;
             this.beginShootingInterval();
         }

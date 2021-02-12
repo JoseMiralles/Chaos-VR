@@ -69,6 +69,17 @@ module: {
         }],
     },
     {
+        test: /\.(mp3|ogg)$/,
+        use: [{
+            loader: "file-loader",
+            options: {
+                name: "[name].[ext]",
+                outputPath: "audio/",
+                publicPath: "audio/"
+            }
+        }],
+    },
+    {
         test: /\.scss/,
         use: [
         {
