@@ -1,3 +1,5 @@
+import { Color } from "three";
+
 import Pistol from "./pistol";
 
 export default class Player {
@@ -5,6 +7,7 @@ export default class Player {
     constructor( scene, renderer, assetStore, enemyGroup ){
         this.scene = scene;
         this.renderer = renderer;
+        this.assetStore = assetStore;
 
         this.health = 100;
 
@@ -14,6 +17,10 @@ export default class Player {
 
     receiveDamage( damage ){
         this.health -= damage;
+
+        const colorAddition = new Color(0.1, 0, 0);
+        this.assetStore.mainEmissiveMaterial.color.add( colorAddition );
+        this.assetStore.mainEmissiveMaterial.emissive.add( colorAddition );
 
         if ( this.health <= 0 ){
             // Game over

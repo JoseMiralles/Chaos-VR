@@ -110,8 +110,7 @@ export default class EnemyRobot extends THREE.Object3D {
             // Begin explosion
             this.remove( this.robotModel );
             const sphere = new THREE.SphereGeometry( 0.8, 5, 5 );
-            const material = new THREE.MeshLambertMaterial
-            ({ emissive: 0xffffff });
+            const material = this.assetStore.mainEmissiveMaterial;
             this.explosion = new THREE.Mesh( sphere, material );
             this.add( this.explosion );
             this.explosionGrowth = 6;
@@ -151,6 +150,11 @@ export default class EnemyRobot extends THREE.Object3D {
         const sound = this.assetStore.botDestroyedSoundGenerator.getNext();
         this.getWorldPosition( sound.position );
         sound.play();
+
+        this.robotModel.children[1].material.dispose();
+        this.robotModel.children[1].material = new THREE.MeshBasicMaterial({
+            color: 0x2b2b2b
+        });
 
         // Make some robots shoot rapidly when killed.
         // Only for enemies who are far.

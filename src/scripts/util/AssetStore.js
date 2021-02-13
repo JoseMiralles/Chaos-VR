@@ -32,6 +32,7 @@ export default class AssetStore {
             this.robot1 = model.scenes[0].children[1];
             this.enviroment = model.scenes[0].children[3];
             this.shotModel = model.scenes[0].children[2];
+            this.mainEmissiveMaterial = this.robot1.children[1].material;
             this.shotModel.material = new THREE.MeshLambertMaterial
                 ({ emissive: 0xfbff00, color: 0xfbff00 });
 
