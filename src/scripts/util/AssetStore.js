@@ -16,7 +16,7 @@ export default class AssetStore {
         this.listener = new THREE.AudioListener();
         this.allAssetsLoadedCallback = allAssetsLoadedCallback;
 
-        this.pathPrepend = "/dist/";
+        this.pathPrepend = "dist/";
         // if (process.env.NODE_ENV !== "development"){
         //     this.pathPrepend = "VR-Shooter" + this.pathPrepend;
         // }
