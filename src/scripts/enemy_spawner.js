@@ -1,6 +1,7 @@
 import * as THREE from "three";
 
 import EnemyRobot from "./enemy_robot";
+import projectileGroup from "./projectile_group";
 
 export default class EnemySpawner {
 
@@ -10,7 +11,7 @@ export default class EnemySpawner {
         this.enemyGroup = new THREE.Group();
         this.enemyGroup.position.z = -10;
         // Group in which enemy projectiles are spawned.
-        this.projectileGroup = new THREE.Group();
+        this.projectileGroup = new projectileGroup( 200 );
 
         this.killCount = 0;
         this.assetStore = assetStore;
@@ -52,7 +53,7 @@ class EnemyHandler {
 
         this.pos = 0;
         this.array = new Array(numberOfBots + 1);
-        this.killCount = 0;
+        this.killCount = 1000;
 
         this.populateArray( enemyClass, model, projectileGroup, assetStore, enemyGroup );
     }

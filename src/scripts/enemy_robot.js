@@ -19,7 +19,7 @@ export default class EnemyRobot extends THREE.Object3D {
 
         this._initialHealth = 75;
 
-        this.free = true;
+        this.free = true; // Specifies weather this bot is free to be re-spawned.
     }
 
 
@@ -125,9 +125,6 @@ export default class EnemyRobot extends THREE.Object3D {
 
     // Handles shooting.
     beginShootingInterval( ){
-        const sphereGeometry = new THREE.BoxGeometry( 0.1, 0.1, 0.1 );
-        const material = new THREE.MeshBasicMaterial
-            ({ color: 0x949494 });
 
         if ( this.shootingInterval ) clearInterval( this.shootingInterval );
 
@@ -138,15 +135,8 @@ export default class EnemyRobot extends THREE.Object3D {
                 position.setFromMatrixPosition( this.cannonEnd.matrixWorld );
                 const quaternion = new THREE.Quaternion();
                 this.cannonEnd.getWorldQuaternion( quaternion );
-                
-                this.projectileGroup.add(
-                    new EnemyProjectile(
-                        sphereGeometry.clone(),
-                        material,
-                        quaternion,
-                        position
-                    )
-                );
+
+                this.projectileGroup.shootFrom( quaternion, position );
                 internalCallback();
             }, this.shootingIntervalTime);
         }
