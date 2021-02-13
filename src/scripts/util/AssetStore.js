@@ -17,9 +17,9 @@ export default class AssetStore {
         this.allAssetsLoadedCallback = allAssetsLoadedCallback;
 
         this.pathPrepend = "/dist/";
-        if (process.env.NODE_ENV !== "development"){
-            this.pathPrepend = "VR-Shooter" + this.pathPrepend;
-        }
+        // if (process.env.NODE_ENV !== "development"){
+        //     this.pathPrepend = "VR-Shooter" + this.pathPrepend;
+        // }
 
         this.load3DAssets();
     }
