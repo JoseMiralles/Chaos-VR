@@ -16,13 +16,18 @@ export default class AssetStore {
         this.listener = new THREE.AudioListener();
         this.allAssetsLoadedCallback = allAssetsLoadedCallback;
 
+        this.pathPrepend = "/dist/";
+        if (process.env.NODE_ENV !== "development"){
+            this.pathPrepend = "/VR-Shooter/";
+        }
+
         this.load3DAssets();
     }
 
     load3DAssets(){
 
         const gltfloader = new GLTFLoader();
-        gltfloader.load("/dist/" + assets, (model) => {
+        gltfloader.load(this.pathPrepend + assets, (model) => {
             this.pistolModel = model.scenes[0].children[0];
             this.robot1 = model.scenes[0].children[1];
             this.enviroment = model.scenes[0].children[3];
@@ -70,7 +75,7 @@ export default class AssetStore {
         ];
 
         filesToLoad.forEach( ( params, i ) =>
-            audioLoader.load ("/dist/" + params.path, (buffer) => {
+            audioLoader.load (this.pathPrepend + params.path, (buffer) => {
                 this[params.key] = new SoundGenerator(
                     buffer, this.listener, params.numberOfAudios, params.audioClass, params.volume
                 );
