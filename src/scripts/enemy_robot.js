@@ -3,38 +3,133 @@ import EnemyProjectile from "./enemy_projetile";
 
 export default class EnemyRobot extends THREE.Object3D {
 
-    constructor(model, projectileGroup, assetStore){
+    constructor(model, projectileGroup, assetStore, number){
         super();
         this.robotModel = model;
         this.cannonEnd = this.robotModel.children[2];
+        this.assetStore = assetStore;
+        this.projectileGroup = projectileGroup;
+        this.onDeath = ()=>{};
+        this.tick = ()=>{};
+        this.applyDamage = ()=>{};
+
+        const sphere = new THREE.SphereGeometry( 0.8, 8, 8 );
+        const material = this.assetStore.mainEmissiveMaterial;
+        this.explosion = new THREE.Mesh( sphere, material );
+
+        this._initialHealth = 75;
+
+        this.free = true;
+    }
+
+
+
+
+    //#region BOT LIFE CYCLE START
+
+    // Responsible for showing this robot back on the field.
+    spawn(){
+
+        // if (this.explosionRemovalTimeout) clearTimeout(this.explosionRemovalTimeout);
+        // if (this.explosionTimeout) clearTimeout(this.explosionTimeout);
+
+        this.free = false;
+
+        // Calculate everything.
         this.add(this.robotModel);
         this.angle = Math.random() * 1000;
         this.speed = 0.3 + Math.random();
-        this.health = 100;
+        this.health = this._initialHealth;
         this.distance = 4 + (Math.random() * 6);
         this.clockwise = Math.random() > 0.5;
         this.xOffset = -10 + Math.random() * 20;
         this.zOffset = -3 + Math.random() * 6;
+        this.position.y = 1 + (Math.random() * 6);
 
-        this.assetStore = assetStore;
+        // Restore the apply damage function.
+        this.applyDamage = this._applyDamage;
+
+        // Set screen material back to white emissive.
+        this.robotModel.children[1].material = this.assetStore.mainEmissiveMaterial;
+
+        // Set the explosion size back to the original size.
+
 
         // Begin firing interval;
         this.shootingIntervalTime = 2000 + (Math.random() * 10000);
-        this.projectileGroup = projectileGroup;
         this.beginShootingInterval();
 
         // Delegate initial ticking function.
         this.tick = this.mainTick;
-        this.onDeath = ()=>{};
 
-        this.position.y = 1 + (Math.random() * 6);
     }
 
+    // Runs immideatly after this robot runs out of health.
+    // It deletegates ticking to the deathTick function.
+    destroy(){
+        // Disable damage.
+        this.applyDamage = ()=>{};
+
+        // Play shutdown sound
+        const sound = this.assetStore.botDestroyedSoundGenerator.getNext();
+        this.getWorldPosition( sound.position );
+        sound.play();
+
+        this.robotModel.children[1].material = this.assetStore.shutDownMaterial;
+
+        // Make some robots shoot rapidly when killed.
+        // Only for enemies who are far.
+        if (Math.random() > 0.9){
+            this.shootingIntervalTime = 100;
+            this.beginShootingInterval();
+        }
+
+        this.deathSpinSpeed = Math.random() * 10;
+        this.fallSpeedDelta = Math.random() * 10;
+        this.fallSpeed = 0;
+        this.tick = this.deathTick;
+
+        this.explosionTimeout = setTimeout(() => {
+            clearTimeout( this.shootingInterval );
+            this.beginExplosionAnimation();
+        }, Math.random() * 3000);
+    }
+
+    // DESPAWN happens here.
+    beginExplosionAnimation(){
+        // Begin explosion
+        this.explosion.scale.set(1, 1, 1);
+        this.remove( this.robotModel );
+        this.add( this.explosion );
+        this.explosionGrowth = 6;
+        this.tick = this.blowUpTick;
+
+        // Play explosion sound from correct world position.
+        const sound = this.assetStore.botExplosionSoundGenerator.getNext();
+        this.getWorldPosition( sound.position );
+        sound.play();
+
+        this.explosionRemovalTimeout = setTimeout(() => {
+            // Remove enemy after some time.
+            this.remove( this.explosion );
+            this.position.y = -10; // Put under the map until re-spawned.
+            this.free = true;
+            this.onDeath();
+        }, 500);
+    }
+
+    //#endregion BOT LIFE CYCLE ENDS
+
+
+
+
     // Handles shooting.
-    beginShootingInterval(  ){
+    beginShootingInterval( ){
         const sphereGeometry = new THREE.BoxGeometry( 0.1, 0.1, 0.1 );
         const material = new THREE.MeshBasicMaterial
             ({ color: 0x949494 });
+
+        if ( this.shootingInterval ) clearInterval( this.shootingInterval );
 
         // Using this instead of "setInterval" to be able to change the time dynamically.
         const internalCallback = () => {
@@ -58,6 +153,22 @@ export default class EnemyRobot extends THREE.Object3D {
 
         internalCallback();
     }
+
+    // Applies the given damage to this bot.
+    _applyDamage( damage ){
+        // Play impact sound from correct world position.
+        const sound = this.assetStore.botImpactSoundGenerator.getNext();
+        this.getWorldPosition( sound.position );
+        sound.play();
+
+        this.health -= damage;
+        if (this.health <= 0) this.destroy();
+    }
+
+
+
+
+    //#region TICKING FUNCTIONS START
 
     // Main tick that runs once per frame.
     mainTick( deltaTime, playerPosition, alive = true ){
@@ -106,71 +217,8 @@ export default class EnemyRobot extends THREE.Object3D {
         this.explosionGrowth -= (50 * deltaTime);
     }
 
-    beginExplosionAnimation(){
-            // Begin explosion
-            this.remove( this.robotModel );
-            const sphere = new THREE.SphereGeometry( 0.8, 5, 5 );
-            const material = this.assetStore.mainEmissiveMaterial;
-            this.explosion = new THREE.Mesh( sphere, material );
-            this.add( this.explosion );
-            this.explosionGrowth = 6;
-            this.tick = this.blowUpTick;
+    //#endregion TICKING FUNCTIONS END
 
-            // Play explosion sound from correct world position.
-            const sound = this.assetStore.botExplosionSoundGenerator.getNext();
-            this.getWorldPosition( sound.position );
-            sound.play();
 
-            setTimeout(() => {
-                // Remove enemy after some time.
-                clearInterval( this.shootingInterval );
-                this.onDeath();
-                this.parent.remove(this);
-            }, 500);
-    }
-
-    applyDamage( damage ){
-
-        // Play impact sound from correct world position.
-        const sound = this.assetStore.botImpactSoundGenerator.getNext();
-        this.getWorldPosition( sound.position );
-        sound.play();
-
-        this.health -= damage;
-        if (this.health <= 0) this.destroy();
-    }
-
-    // Runs immideatly after this robot runs out of health.
-    // It deletegates ticking to the deathTick function.
-    destroy(){
-        // Disable damage.
-        this.applyDamage = ()=>{};
-
-        // Play shutdown sound
-        const sound = this.assetStore.botDestroyedSoundGenerator.getNext();
-        this.getWorldPosition( sound.position );
-        sound.play();
-
-        this.robotModel.children[1].material.dispose();
-        this.robotModel.children[1].material = new THREE.MeshBasicMaterial({
-            color: 0x2b2b2b
-        });
-
-        // Make some robots shoot rapidly when killed.
-        // Only for enemies who are far.
-        if (Math.random() > 0.9){
-            this.shootingIntervalTime = 100;
-            this.beginShootingInterval();
-        }
-
-        this.deathSpinSpeed = Math.random() * 10;
-        this.fallSpeedDelta = Math.random() * 10;
-        this.fallSpeed = 0;
-        this.tick = this.deathTick;
-
-        this.explosionTimeout = setTimeout(() => {
-            this.beginExplosionAnimation();
-        }, Math.random() * 3000);
-    }
 
 }

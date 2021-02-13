@@ -17,11 +17,14 @@ export default class AssetStore {
         this.allAssetsLoadedCallback = allAssetsLoadedCallback;
 
         this.pathPrepend = "dist/";
-        // if (process.env.NODE_ENV !== "development"){
-        //     this.pathPrepend = "VR-Shooter" + this.pathPrepend;
-        // }
-
+        this.setupLocalAssets();
         this.load3DAssets();
+    }
+
+    setupLocalAssets(){
+        this.shutDownMaterial = new THREE.MeshBasicMaterial({
+            color: 0x2b2b2b
+        });
     }
 
     load3DAssets(){

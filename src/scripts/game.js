@@ -26,6 +26,10 @@ export default class Game {
         this.camera = new THREE.PerspectiveCamera(
             75, window.innerWidth / window.innerHeight, 0.1, 500
             );
+        window.camera = this.camera;
+        window.lookAtBot = (n) => {
+            camera.lookAt( arr[n].getWorldPosition().x, arr[n].getWorldPosition().y, arr[n].getWorldPosition().z );
+        }
         this.camera.position.set(0, 1.6, 0);
         this.camera.add( this.assetStore.listener ); // Add audio listener to camera.
 
@@ -86,7 +90,7 @@ export default class Game {
 
         // * 0.8 slows down the simulation.
         const delta = this.clock.getDelta() * 0.8;
-        
+
         this.enemySpawner.enemyGroup.children.forEach(
             enemy => enemy.tick( delta, playerPosition ) );
         this.enemySpawner.projectileGroup.children.forEach(
