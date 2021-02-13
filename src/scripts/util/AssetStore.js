@@ -18,7 +18,7 @@ export default class AssetStore {
 
         this.pathPrepend = "/dist/";
         if (process.env.NODE_ENV !== "development"){
-            this.pathPrepend = "/VR-Shooter/";
+            this.pathPrepend = "VR-Shooter" + this.pathPrepend;
         }
 
         this.load3DAssets();
