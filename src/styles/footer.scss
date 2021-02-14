@@ -1,0 +1,32 @@
+footer {
+    display: flex;
+    align-items: center;
+
+    padding: 25px 0px;
+
+    background: $dark;
+    height: 20vh;
+}
+
+#main-list{
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+
+    ul > li {
+        padding: 5px 0px;
+
+        &:first-child{
+            font-weight: bold;
+            font-size: large;
+            color: $light;
+        }
+
+        a{
+            color: $main;
+            &:hover{
+                text-decoration: underline;
+            }
+        }
+    }
+}

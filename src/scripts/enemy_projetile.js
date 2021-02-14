@@ -31,7 +31,8 @@ export default class EnemyProjectile extends THREE.Mesh {
 
     mainTick(delta, playerPosition, player){
 
-        this.children[0].rotateY( 0.5 * delta );
+        this.rotateY( 2 * delta );
+        this.children[0].rotateY( 2 * delta );
 
         this.position.z += this.userData.velocity.z * delta;
         this.position.y += this.userData.velocity.y * delta;

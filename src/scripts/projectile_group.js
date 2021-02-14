@@ -14,11 +14,11 @@ export default class projectileGroup extends THREE.Group {
         // Cone mesh
         const sphereGeometry = new THREE.ConeGeometry( 0.1, 0.3, 3, 1 );
         const material = new THREE.MeshLambertMaterial
-            ({ color: 0x949494 });
+            ({ color: 0xffffff });
 
         // Wireframe
         // const edgesGeometry = new THREE.EdgesGeometry( sphereGeometry );
-        const wfMaterial = new THREE.LineBasicMaterial( { color: 0xffffff } );
+        const wfMaterial = new THREE.LineBasicMaterial( { color: 0x131313 } );
         // const wireframe = new THREE.WireframeGeometry( sphereGeometry );
         const lines = new THREE.LineSegments( sphereGeometry, wfMaterial );
 

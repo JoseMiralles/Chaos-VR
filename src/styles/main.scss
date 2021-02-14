@@ -1,0 +1,33 @@
+html {
+    background: $dark2;
+    color: $light;
+
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+}
+
+body {
+    margin: none;
+}
+
+a{
+    color: $light;
+    text-decoration: none;
+}
+
+button {
+    padding: 20px 55px;
+    background: $light;
+    color: black;
+    font-weight: bold;
+    font-size: 20px;
+    border: none;
+    box-shadow: $dark 5px 5px 0px;
+
+    &:hover{
+        background: $main;
+    }
+}
+
+.display-none {
+    display: none;
+}
