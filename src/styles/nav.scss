@@ -9,11 +9,19 @@ nav {
     #title-wrapper {
         align-self: center;
         justify-self: center;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 45px;
+        font-family: 'Russo One', sans-serif;
+        text-shadow: 2px 2px $dark2;
+        color: $light;
     }
 
     #nav-right{
         align-self: center;
         justify-self: flex-end;
+
+        font-weight: bold;
 
         display: flex;
 
@@ -31,7 +39,7 @@ nav {
         }
 
         li:hover{
-            background-color: $main;
+            background-color: $light;
             color: $dark;
             a{
                 color: $dark;
