@@ -9,5 +9,6 @@ window.addEventListener("DOMContentLoaded", () => {
         const game = new Game(
             document.getElementById("game-window")
         );
+        startButton.setAttribute("class", "display-none");
     });
 });
