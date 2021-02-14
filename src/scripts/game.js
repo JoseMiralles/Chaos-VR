@@ -20,11 +20,12 @@ export default class Game {
     }
 
     innitializeGame(HTMLElement){
+        this.HTMLElement = HTMLElement;
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color( 0x2b2c3b );
 
         this.camera = new THREE.PerspectiveCamera(
-            75, window.innerWidth / window.innerHeight, 0.1, 500
+            75, HTMLElement.clientWidth / HTMLElement.clientHeight, 0.1, 500
             );
         window.camera = this.camera;
         window.lookAtBot = (n) => {
@@ -46,8 +47,8 @@ export default class Game {
         this.scene.add(this.assetStore.enviroment);
 
         this.renderer = new THREE.WebGL1Renderer( { antialias: !this.performanceMode } ); //TODO: Make this a toggable setting.
-        this.renderer.setPixelRatio( window.devicePixelRatio );
-        this.renderer.setSize( window.innerWidth, window.innerHeight );
+        this.renderer.setPixelRatio( HTMLElement.devicePixelRatio );
+        this.renderer.setSize( HTMLElement.clientWidth, HTMLElement.clientHeight );
         this.renderer.outputEncoding = THREE.sRGBEncoding;
         this.renderer.xr.enabled = true;
 
@@ -74,9 +75,9 @@ export default class Game {
     }
 
     onWindowResize(){
-        this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.aspect = this.HTMLElement.clientWidth / this.HTMLElement.clientHeight;
         this.camera.updateProjectionMatrix();
-        this.renderer.setSize( window.innerWidth, window.innerHeight );
+        this.renderer.setSize( this.HTMLElement.clientWidth, this.HTMLElement.clientHeight );
     }
 
     animate(){

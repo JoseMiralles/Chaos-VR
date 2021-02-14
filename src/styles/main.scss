@@ -1,0 +1,23 @@
+html {
+    background: $dark2;
+    color: $light;
+}
+
+body {
+    margin: none;
+}
+
+a{
+    color: $main;
+}
+
+button {
+    padding: 20px 55px;
+    background: $main;
+    color: $dark;
+}
+
+
+.display-none{
+    display: none;
+}

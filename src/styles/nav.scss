@@ -1,0 +1,43 @@
+nav {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+
+    background: $dark3;
+    height: 65px;
+
+    #title-wrapper {
+        align-self: center;
+        justify-self: center;
+    }
+
+    #nav-right{
+        align-self: center;
+        justify-self: flex-end;
+
+        display: flex;
+
+        ul, li {
+            height: 65px;
+            display: flex;
+            align-content: center;
+            text-align: center;
+
+            div {
+                height: fit-content;
+                align-self: center;
+                margin: 20px;
+            }
+        }
+
+        li:hover{
+            background-color: $main;
+            color: $dark;
+            a{
+                color: $dark;
+            }
+        }
+
+    }
+
+}
