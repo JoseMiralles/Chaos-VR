@@ -4,7 +4,7 @@ nav {
     justify-content: space-evenly;
 
     background: $dark3;
-    height: 65px;
+    height: 75px;
 
     #title-wrapper {
         align-self: center;
@@ -26,7 +26,7 @@ nav {
         display: flex;
 
         ul, li {
-            height: 65px;
+            height: 75px;
             display: flex;
             align-content: center;
             text-align: center;
@@ -36,6 +36,11 @@ nav {
                 align-self: center;
                 margin: 20px;
             }
+        }
+
+        a{
+            display: block;
+            line-height: 75px;
         }
 
         li:hover{

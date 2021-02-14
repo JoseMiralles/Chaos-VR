@@ -21,7 +21,7 @@ button {
     font-weight: bold;
     font-size: 20px;
     border: none;
-    box-shadow: #0d0f13 5px 5px 0px;
+    box-shadow: $dark 5px 5px 0px;
 
     &:hover{
         background: $main;
