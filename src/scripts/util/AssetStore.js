@@ -9,6 +9,8 @@ import shot from "../../../audio/shot.mp3";
 import botImpact from "../../../audio/botImpact.mp3";
 import botDestroyed from "../../../audio/bot_destroyed.mp3";
 import botExplosion from "../../../audio/bot_explosion.mp3";
+import playerImpact from "../../../audio/player_impact.mp3";
+
 import font from "../../../fonts/toboto_medium.ttf";
 
 export default class AssetStore {
@@ -58,7 +60,7 @@ export default class AssetStore {
                 key: "shotSoundGenerator",
                 audioClass: THREE.Audio,
                 numberOfAudios: 30,
-                volume: 0.3
+                volume: 0.2
             },
             { 
                 path: botImpact,
@@ -78,6 +80,13 @@ export default class AssetStore {
                 path: botExplosion,
                 key: "botExplosionSoundGenerator",
                 audioClass: THREE.PositionalAudio,
+                numberOfAudios: 5,
+                volume: 1
+            },
+            { 
+                path: playerImpact,
+                key: "playerImpactSoundGenerator",
+                audioClass: THREE.Audio,
                 numberOfAudios: 5,
                 volume: 1
             },

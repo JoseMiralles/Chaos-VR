@@ -25,6 +25,8 @@ export default class Player {
     _receiveDamage( damage ){
         this.health -= damage;
 
+        this.assetStore.playerImpactSoundGenerator.play();
+
         if ( this.health <= 0 ){
             this.receiveDamage = ()=>{};
             this.pistol1.handleTargets = this.pistol1.handleMenuTargets;
