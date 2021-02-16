@@ -1,4 +1,4 @@
-import { Color } from "three";
+import { Color, Mesh, PlaneGeometry } from "three";
 
 import Pistol from "./pistol";
 
@@ -14,6 +14,7 @@ export default class Player {
 
         this.mainEmmisiveColor = this.assetStore.mainEmissiveMaterial.color.getHex();
 
+        this.healthBar = new HealthBar(0.1, 0.02, assetStore.mainEmissiveMaterial);
         this.setupWeapons( enemyGroup, assetStore );
         this.setupControllers(assetStore.pistolModel);
 
@@ -24,6 +25,7 @@ export default class Player {
 
     _receiveDamage( damage ){
         this.health -= damage;
+        this.healthBar.setHealth( this.health );
 
         this.assetStore.playerImpactSoundGenerator.play();
 
@@ -37,23 +39,26 @@ export default class Player {
         this.assetStore.mainEmissiveMaterial.color.setHex( 0xff0000 );
         this.assetStore.mainEmissiveMaterial.emissive.setHex( 0xff0000 );
 
-        setTimeout(()=>{
+        if (this.healthTimeout) clearTimeout( this.healthTimeout );
+        this.healthTimeout = setTimeout(()=>{
             this.assetStore.mainEmissiveMaterial.color.setHex( this.mainEmmisiveColor );
             this.assetStore.mainEmissiveMaterial.emissive.setHex( this.mainEmmisiveColor );
-        }, 500);
+        }, 100);
     }
 
     setupWeapons( enemyGroup, assetStore ){
         this.pistol1 = new Pistol( this.scene, enemyGroup, assetStore );
         this.pistol2 = new Pistol( this.scene, enemyGroup, assetStore );
-        const startSelected = () => {
-            this.pistol1.handleTargets = this.pistol1.handleEnemyTargets;
-            this.pistol2.handleTargets = this.pistol2.handleEnemyTargets;
-            this.health = this._initialHealth;
-            this.receiveDamage = this._receiveDamage;
-        };
-        this.pistol1.startSelected = startSelected;
-        this.pistol2.startSelected = startSelected;
+        this.pistol1.startSelected = this.startSelected.bind(this);
+        this.pistol2.startSelected = this.startSelected.bind(this);
+    }
+
+    startSelected(){
+        this.pistol1.handleTargets = this.pistol1.handleEnemyTargets;
+        this.pistol2.handleTargets = this.pistol2.handleEnemyTargets;
+        this.health = this._initialHealth;
+        this.healthBar.reset();
+        this.receiveDamage = this._receiveDamage;
     }
 
     setupControllers(pistolModel){
@@ -74,8 +79,35 @@ export default class Player {
         this.controllerGrip1.add( pistolModel );
         this.controllerGrip2.add( pistolModel2 );
 
+        this.controllerGrip2.add( this.healthBar );
+
         this.scene.add( this.controllerGrip1 );
         this.scene.add( this.controllerGrip2 );
+    }
+
+}
+
+class HealthBar extends Mesh {
+
+    constructor(widht, height, material){
+        const geometry = new PlaneGeometry( widht, height );
+        super(geometry, material);
+        this.position.set(-0.04, 0, 0)
+        this.rotateY(1.57);
+        this.rotateX(1.57);
+
+        this.geometry = geometry;
+        this._initialWidth = widht;
+        this.initialHeight = height;
+    }
+
+    setHealth( hp ){
+        if (hp < 1) hp = 1;
+        this.scale.set( hp / 100 , 1, 1);
+    }
+
+    reset(){
+        this.scale.set(1, 1, 1);
     }
 
 }

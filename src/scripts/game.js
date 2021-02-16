@@ -88,7 +88,8 @@ export default class Game {
             this.scene,
             this.renderer,
             this.assetStore,
-            this.enemySpawner.enemyGroup );
+            this.enemySpawner.enemyGroup,
+            this.camera );
     }
 
     onWindowResize(){
