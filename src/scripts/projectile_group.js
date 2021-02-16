@@ -10,11 +10,15 @@ export default class projectileGroup extends THREE.Group {
         this.pos = 0;
     }
 
+    despawnAll(){
+        this.children.forEach(projectile => projectile.deSpawn());
+    }
+
     populate( n ){
         // Cone mesh
         const sphereGeometry = new THREE.ConeGeometry( 0.1, 0.3, 3, 1 );
-        const material = new THREE.MeshLambertMaterial
-            ({ color: 0xffffff });
+        const material = new THREE.MeshBasicMaterial
+            ({ color: 0xfbff00 });
 
         // Wireframe
         // const edgesGeometry = new THREE.EdgesGeometry( sphereGeometry );

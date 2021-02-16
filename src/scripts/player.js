@@ -12,6 +12,8 @@ export default class Player {
         this._initialHealth = 100;
         this.health = this._initialHealth;
 
+        this.mainEmmisiveColor = this.assetStore.mainEmissiveMaterial.color.getHex();
+
         this.setupWeapons( enemyGroup, assetStore );
         this.setupControllers(assetStore.pistolModel);
 
@@ -23,16 +25,20 @@ export default class Player {
     _receiveDamage( damage ){
         this.health -= damage;
 
-        const colorAddition = new Color(0.1, 0, 0);
-        this.assetStore.mainEmissiveMaterial.color.add( colorAddition );
-        this.assetStore.mainEmissiveMaterial.emissive.add( colorAddition );
-
         if ( this.health <= 0 ){
             this.receiveDamage = ()=>{};
             this.pistol1.handleTargets = this.pistol1.handleMenuTargets;
             this.pistol2.handleTargets = this.pistol2.handleMenuTargets;
             if ( this.onDeath ) this.onDeath();
         }
+
+        this.assetStore.mainEmissiveMaterial.color.setHex( 0xff0000 );
+        this.assetStore.mainEmissiveMaterial.emissive.setHex( 0xff0000 );
+
+        setTimeout(()=>{
+            this.assetStore.mainEmissiveMaterial.color.setHex( this.mainEmmisiveColor );
+            this.assetStore.mainEmissiveMaterial.emissive.setHex( this.mainEmmisiveColor );
+        }, 500);
     }
 
     setupWeapons( enemyGroup, assetStore ){

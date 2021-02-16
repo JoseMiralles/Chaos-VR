@@ -17,11 +17,17 @@ export default class Game {
             this.animate();
             this.setupEnemySpawner();
             this.setupPlayer();
+            this.deltaMultiplier = 0.8 // This is used to slow down and speed up the game. 
+            
             this.assetStore.menu.onStartButtonClicked = () => {
+                this.enemySpawner.projectileGroup.despawnAll(); // Remove all projectiles if any.
                 this.enemySpawner.smallEnemyHandler.startSpawning();
+                this.deltaMultiplier = 0.8;
             }
+
             this.player.onDeath = () => {
                 this.scene.add( this.assetStore.menu );
+                this.deltaMultiplier = 0.3;
                 this.enemySpawner.killAll();
             };
         });
@@ -100,8 +106,8 @@ export default class Game {
         const playerPosition = new THREE.Vector3();
         this.camera.getWorldPosition( playerPosition );
 
-        // * 0.8 slows down the simulation.
-        const delta = this.clock.getDelta() * 0.8;
+        // Delta multiplier is used to speed up or down the game dynamically.
+        const delta = this.clock.getDelta() * this.deltaMultiplier;
 
         this.enemySpawner.enemyGroup.children.forEach(
             enemy => enemy.tick( delta, playerPosition ) );
