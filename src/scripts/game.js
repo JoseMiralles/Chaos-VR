@@ -12,13 +12,18 @@ export default class Game {
 
         // Load files, initialize game, and start animation loop.
         this.assetStore = new AssetStore( ( arg ) => {
-
             this.innitializeGame(HTMLElement);
             this.scene.add( this.assetStore.menu );
-            this.setupPlayer();
-
-            this.setupEnemySpawner();
             this.animate();
+            this.setupEnemySpawner();
+            this.setupPlayer();
+            this.assetStore.menu.onStartButtonClicked = () => {
+                this.enemySpawner.smallEnemyHandler.startSpawning();
+            }
+            this.player.onDeath = () => {
+                this.scene.add( this.assetStore.menu );
+                this.enemySpawner.killAll();
+            };
         });
     }
 
@@ -77,7 +82,7 @@ export default class Game {
             this.scene,
             this.renderer,
             this.assetStore,
-            this.assetStore.menu );
+            this.enemySpawner.enemyGroup );
     }
 
     onWindowResize(){

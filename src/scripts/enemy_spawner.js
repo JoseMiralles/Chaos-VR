@@ -20,13 +20,19 @@ export default class EnemySpawner {
         this.startSpawner();
     }
 
+    killAll(){
+        this.setupHandlers();
+        this.enemyGroup.children.forEach( bot => {
+            bot.applyDamage(10000);
+        });
+    }
+
     setupHandlers(){
         this.smallEnemyHandler = new EnemyHandler(
             EnemyRobot, 10, this.assetStore,
             this.projectileGroup, this.assetStore.robot1,
             this.enemyGroup
             );
-        this.smallEnemyHandler.startSpawning();
     }
 
     startSpawner(){
