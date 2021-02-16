@@ -17,7 +17,7 @@ export default class EnemyProjectile extends THREE.Mesh {
         this.setRotationFromQuaternion(quaternion);
         this.rotateX(1.57); // Point towards the player (90degs).
         this.userData.velocity = new THREE.Vector3();
-        this.userData.velocity.z = 5;
+        this.userData.velocity.z = 3;
         this.userData.velocity.applyQuaternion( quaternion );
 
         this.tick = this.mainTick;

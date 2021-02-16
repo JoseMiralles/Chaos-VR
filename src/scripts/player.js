@@ -9,27 +9,51 @@ export default class Player {
         this.renderer = renderer;
         this.assetStore = assetStore;
 
-        this.health = 100;
+        this._initialHealth = 100;
+        this.health = this._initialHealth;
+
+        this.mainEmmisiveColor = this.assetStore.mainEmissiveMaterial.color.getHex();
 
         this.setupWeapons( enemyGroup, assetStore );
         this.setupControllers(assetStore.pistolModel);
+
+        this.onDeath = null;
+
+        this.receiveDamage = this._receiveDamage;
     }
 
-    receiveDamage( damage ){
+    _receiveDamage( damage ){
         this.health -= damage;
 
-        const colorAddition = new Color(0.1, 0, 0);
-        this.assetStore.mainEmissiveMaterial.color.add( colorAddition );
-        this.assetStore.mainEmissiveMaterial.emissive.add( colorAddition );
+        this.assetStore.playerImpactSoundGenerator.play();
 
         if ( this.health <= 0 ){
-            // Game over
+            this.receiveDamage = ()=>{};
+            this.pistol1.handleTargets = this.pistol1.handleMenuTargets;
+            this.pistol2.handleTargets = this.pistol2.handleMenuTargets;
+            if ( this.onDeath ) this.onDeath();
         }
+
+        this.assetStore.mainEmissiveMaterial.color.setHex( 0xff0000 );
+        this.assetStore.mainEmissiveMaterial.emissive.setHex( 0xff0000 );
+
+        setTimeout(()=>{
+            this.assetStore.mainEmissiveMaterial.color.setHex( this.mainEmmisiveColor );
+            this.assetStore.mainEmissiveMaterial.emissive.setHex( this.mainEmmisiveColor );
+        }, 500);
     }
 
     setupWeapons( enemyGroup, assetStore ){
         this.pistol1 = new Pistol( this.scene, enemyGroup, assetStore );
         this.pistol2 = new Pistol( this.scene, enemyGroup, assetStore );
+        const startSelected = () => {
+            this.pistol1.handleTargets = this.pistol1.handleEnemyTargets;
+            this.pistol2.handleTargets = this.pistol2.handleEnemyTargets;
+            this.health = this._initialHealth;
+            this.receiveDamage = this._receiveDamage;
+        };
+        this.pistol1.startSelected = startSelected;
+        this.pistol2.startSelected = startSelected;
     }
 
     setupControllers(pistolModel){
