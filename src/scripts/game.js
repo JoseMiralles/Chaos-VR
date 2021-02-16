@@ -12,9 +12,12 @@ export default class Game {
 
         // Load files, initialize game, and start animation loop.
         this.assetStore = new AssetStore( ( arg ) => {
+
             this.innitializeGame(HTMLElement);
-            this.setupEnemySpawner();
+            this.scene.add( this.assetStore.menu );
             this.setupPlayer();
+
+            this.setupEnemySpawner();
             this.animate();
         });
     }
@@ -27,6 +30,9 @@ export default class Game {
         this.camera = new THREE.PerspectiveCamera(
             75, HTMLElement.clientWidth / HTMLElement.clientHeight, 0.1, 500
             );
+
+        window.scene = this.scene;
+        window.menu = this.assetStore.menu;
         window.camera = this.camera;
         window.lookAtBot = (n) => {
             camera.lookAt( arr[n].getWorldPosition().x, arr[n].getWorldPosition().y, arr[n].getWorldPosition().z );
@@ -71,7 +77,7 @@ export default class Game {
             this.scene,
             this.renderer,
             this.assetStore,
-            this.enemySpawner.enemyGroup );
+            this.assetStore.menu );
     }
 
     onWindowResize(){

@@ -2,12 +2,14 @@
 
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { TTFLoader } from "three/examples/jsm/loaders/TTFLoader";
 
 import assets from "../../../meshes/assets.glb";
 import shot from "../../../audio/shot.mp3";
 import botImpact from "../../../audio/botImpact.mp3";
 import botDestroyed from "../../../audio/bot_destroyed.mp3";
 import botExplosion from "../../../audio/bot_explosion.mp3";
+import font from "../../../fonts/toboto_medium.ttf";
 
 export default class AssetStore {
 
@@ -38,6 +40,9 @@ export default class AssetStore {
             this.mainEmissiveMaterial = this.robot1.children[1].material;
             this.shotModel.material = new THREE.MeshLambertMaterial
                 ({ emissive: 0xfbff00, color: 0xfbff00 });
+
+            this.menu = model.scenes[0].children[4];
+            this.menu.position.z = -3;
 
             this.loadAudioFiles();
         });
@@ -88,6 +93,41 @@ export default class AssetStore {
                 if ( i === filesToLoad.length - 1 )
                     this.allAssetsLoadedCallback();
             }, null, (err) => console.log(err)));
+    }
+
+    loadFonts(){
+        const loader = new TTFLoader();
+        const fontLoader = new THREE.FontLoader();
+        console.log(font);
+        loader.load(this.pathPrepend + font, ( _font ) => {
+            this.setupMenu( fontLoader.parse(_font) );
+        });
+        this.allAssetsLoadedCallback();
+    }
+
+    // Setups the main menu, and it's contents.
+    setupMenuWithFont(_font){
+        this.menu.position.z = -3;
+
+        const color = 0xffffff;
+
+        const material = new THREE.MeshBasicMaterial( {
+            color: color,
+        } );
+
+        const par =
+        "Fight hordes of bots.\n" +
+        "Aim and shoot with your controllers.\n" +
+        "Move around to avoid projectiles.";
+
+        const geometry = new THREE.TextGeometry( par, {
+            font: _font,
+            size: 0.1,
+            height: 0,
+        } );
+        geometry.translate(-1, 1.7 , 0.1)
+        const text = new THREE.Mesh( geometry, material );
+        this.menu.add( text );
     }
 
 }
