@@ -43,7 +43,7 @@ export default class Player {
         this.healthTimeout = setTimeout(()=>{
             this.assetStore.mainEmissiveMaterial.color.setHex( this.mainEmmisiveColor );
             this.assetStore.mainEmissiveMaterial.emissive.setHex( this.mainEmmisiveColor );
-        }, 100);
+        }, 500);
     }
 
     setupWeapons( enemyGroup, assetStore ){
