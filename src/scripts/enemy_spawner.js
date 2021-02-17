@@ -33,12 +33,14 @@ export default class EnemySpawner {
             EnemyRobot, 10, this.assetStore,
             this.projectileGroup, this.assetStore.robot1,
             this.enemyGroup,
+            10, // Amount of kills, of this enemy tye are needed to begin spawning one more bot of this type.
+            7   // The total number of bots of this kind that can be alive at the same time.
             );
         this.mediumEnemyHandler = new EnemyHandler(
             EnemyRobotMedium, 5, this.assetStore,
             this.projectileGroup, this.assetStore.robot2,
             this.enemyGroup,
-            20, // Amount of kills needed to begin spawning one more bot.
+            20, // Amount of kills, of this enemy tye are needed to begin spawning one more bot of this type.
             3   // The total number of bots of this kind that can be alive at the same time.
             );
     }
