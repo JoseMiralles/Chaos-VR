@@ -37,6 +37,7 @@ export default class AssetStore {
         gltfloader.load(this.pathPrepend + assets, (model) => {
             this.pistolModel = model.scenes[0].children[0];
             this.robot1 = model.scenes[0].children[1];
+            this.robot2 = model.scenes[0].children[5];
             this.enviroment = model.scenes[0].children[3];
             this.shotModel = model.scenes[0].children[2];
             this.mainEmissiveMaterial = this.robot1.children[1].material;

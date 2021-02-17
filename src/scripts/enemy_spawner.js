@@ -1,6 +1,7 @@
 import * as THREE from "three";
 
 import EnemyRobot from "./enemy_robot";
+import EnemyRobotMedium from "./enemy_robot_medium";
 import projectileGroup from "./projectile_group";
 
 export default class EnemySpawner {
@@ -17,7 +18,7 @@ export default class EnemySpawner {
         this.assetStore = assetStore;
 
         this.setupHandlers();
-        this.startSpawner();
+        this.initializeSpawners();
     }
 
     killAll(){
@@ -31,11 +32,18 @@ export default class EnemySpawner {
         this.smallEnemyHandler = new EnemyHandler(
             EnemyRobot, 10, this.assetStore,
             this.projectileGroup, this.assetStore.robot1,
-            this.enemyGroup
+            this.enemyGroup,
+            );
+        this.mediumEnemyHandler = new EnemyHandler(
+            EnemyRobotMedium, 5, this.assetStore,
+            this.projectileGroup, this.assetStore.robot2,
+            this.enemyGroup,
+            20, // Amount of kills needed to begin spawning one more bot.
+            3   // The total number of bots of this kind that can be alive at the same time.
             );
     }
 
-    startSpawner(){
+    initializeSpawners(){
         setInterval(() => {
 
             // Add small robots as required.
@@ -46,6 +54,15 @@ export default class EnemySpawner {
                 }
             }
 
+            if (!this.mediumEnemyHandler.isSpawning && this.smallEnemyHandler.killCount > 10)
+                this.mediumEnemyHandler.startSpawning();
+            const mediumEnemyEmptySpots = this.mediumEnemyHandler.getNumberOfEmptySpots();
+            if ( mediumEnemyEmptySpots >= 1 ){
+                for ( let i = 1; i <= mediumEnemyEmptySpots; i++ ){
+                    this.mediumEnemyHandler.spawnBot();
+                }
+            }
+
         }, 1000);
     }
 
@@ -53,25 +70,31 @@ export default class EnemySpawner {
 
 class EnemyHandler {
 
-    constructor( enemyClass, numberOfBots, assetStore, projectileGroup, model, enemyGroup ){
+    constructor( enemyClass, numberOfBots, assetStore, projectileGroup, model, enemyGroup, spawnDivider, limit ){
         this.totalSpots = 0;
         this.usedSpots = 0;
 
+        this.isSpawning = false;
+
         this.pos = 0;
         this.array = new Array(numberOfBots + 1);
-        this.killCount = 1000;
+        this.killCount = 0;
 
-        this.populateArray( enemyClass, model, projectileGroup, assetStore, enemyGroup );
+        this.spawnDivider = spawnDivider;
+        this.limit = limit;
+
+        this.populateArray( enemyClass, model, projectileGroup, assetStore, enemyGroup, spawnDivider, limit );
     }
 
     adjustSpawnRate(){
-        if (this.totalSpots <= 10){
-            this.totalSpots = Math.ceil( this.killCount / 10 );
-            if (this.totalSpots > 10) this.totalSpots = 10;
+        if (this.totalSpots <= this.limit){
+            this.totalSpots = Math.ceil( this.killCount / this.spawnDivider );
+            if (this.totalSpots > this.limit) this.totalSpots = this.limit;
         }
     }
 
     startSpawning(){
+        this.isSpawning = true;
         this.totalSpots = 1;
     }
 
