@@ -49,6 +49,7 @@ export default class Game {
             camera.lookAt( arr[n].getWorldPosition().x, arr[n].getWorldPosition().y, arr[n].getWorldPosition().z );
         }
         this.camera.position.set(0, 1.6, 0);
+        this.assetStore.listener.rotateZ(1.57);
         this.camera.add( this.assetStore.listener ); // Add audio listener to camera.
 
         // Setup lights

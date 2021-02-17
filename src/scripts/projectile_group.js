@@ -35,10 +35,10 @@ export default class projectileGroup extends THREE.Group {
         }
     }
 
-    shootFrom( quaternion, postion ){
+    shootFrom( quaternion, postion, velocity ){
         if ( this.children[ this.pos ].free ){
             this.children[ this.pos ].spawn(
-                quaternion, postion
+                quaternion, postion, velocity
             );
         }
         this.pos ++;

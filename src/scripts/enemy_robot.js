@@ -3,7 +3,7 @@ import EnemyProjectile from "./enemy_projetile";
 
 export default class EnemyRobot extends THREE.Object3D {
 
-    constructor(model, projectileGroup, assetStore, number){
+    constructor(model, projectileGroup, assetStore){
         super();
         this.robotModel = model;
         this.cannonEnd = this.robotModel.children[2];
@@ -17,7 +17,10 @@ export default class EnemyRobot extends THREE.Object3D {
         const material = this.assetStore.mainEmissiveMaterial;
         this.explosion = new THREE.Mesh( sphere, material );
 
-        this._initialHealth = 75;
+        this._initialHealth = 5;
+        this._highSpeed = 0.3;
+        this._lowSpeed = 1;
+        this._projectileVelocity = 3;
 
         this.free = true; // Specifies weather this bot is free to be re-spawned.
     }
@@ -38,7 +41,7 @@ export default class EnemyRobot extends THREE.Object3D {
         // Calculate everything.
         this.add(this.robotModel);
         this.angle = Math.random() * 1000;
-        this.speed = 0.3 + Math.random();
+        this.speed = this._lowSpeed + (Math.random() * this._highSpeed);
         this.health = this._initialHealth;
         this.distance = 4 + (Math.random() * 6);
         this.clockwise = Math.random() > 0.5;
@@ -136,7 +139,7 @@ export default class EnemyRobot extends THREE.Object3D {
                 const quaternion = new THREE.Quaternion();
                 this.cannonEnd.getWorldQuaternion( quaternion );
 
-                this.projectileGroup.shootFrom( quaternion, position );
+                this.projectileGroup.shootFrom( quaternion, position, this._projectileVelocity );
                 internalCallback();
             }, this.shootingIntervalTime);
         }
