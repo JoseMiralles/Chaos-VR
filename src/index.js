@@ -3,6 +3,9 @@ import "regenerator-runtime/runtime.js";
 
 import Game from "./scripts/game";
 
+import "../images/meta-image.png";
+import "../images/favicon.png";
+
 window.addEventListener("DOMContentLoaded", () => {
     const startButton = document.getElementById("startButton");
     startButton.addEventListener("click", () => {

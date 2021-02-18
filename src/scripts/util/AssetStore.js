@@ -11,7 +11,7 @@ import botDestroyed from "../../../audio/bot_destroyed.mp3";
 import botExplosion from "../../../audio/bot_explosion.mp3";
 import playerImpact from "../../../audio/player_impact.mp3";
 
-import font from "../../../fonts/toboto_medium.ttf";
+// import font from "../../../fonts/toboto_medium.ttf";
 
 export default class AssetStore {
 
