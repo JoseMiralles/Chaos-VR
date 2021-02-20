@@ -134,6 +134,8 @@ export default class EnemyRobot extends THREE.Object3D {
         // Using this instead of "setInterval" to be able to change the time dynamically.
         const internalCallback = () => {
             this.shootingInterval = setTimeout(() => {
+
+                // TODO: recycle these variables.
                 const position = new THREE.Vector3();
                 position.setFromMatrixPosition( this.cannonEnd.matrixWorld );
                 const quaternion = new THREE.Quaternion();

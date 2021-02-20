@@ -1,6 +1,7 @@
 import { Color, Mesh, PlaneGeometry } from "three";
 
 import Pistol from "./pistol";
+import PlayerProjectileGroup from "./player_projectile_group";
 
 export default class Player {
 
@@ -15,12 +16,18 @@ export default class Player {
         this.mainEmmisiveColor = this.assetStore.mainEmissiveMaterial.color.getHex();
 
         this.healthBar = new HealthBar(0.1, 0.02, assetStore.mainEmissiveMaterial);
-        this.setupWeapons( enemyGroup, assetStore );
+        this.playerProjectileGroup = new PlayerProjectileGroup(50, this.assetStore);
+        this.setupWeapons( enemyGroup, assetStore, this.playerProjectileGroup );
         this.setupControllers(assetStore.pistolModel);
 
         this.onDeath = null;
 
         this.receiveDamage = this._receiveDamage;
+    }
+
+    tick( delta ){
+        this.playerProjectileGroup.children.forEach(
+            projectile => projectile.tick( delta ));
     }
 
     _receiveDamage( damage ){
@@ -46,9 +53,9 @@ export default class Player {
         }, 500);
     }
 
-    setupWeapons( enemyGroup, assetStore ){
-        this.pistol1 = new Pistol( this.scene, enemyGroup, assetStore );
-        this.pistol2 = new Pistol( this.scene, enemyGroup, assetStore );
+    setupWeapons( enemyGroup, assetStore, playerProjectileGroup ){
+        this.pistol1 = new Pistol( this.scene, enemyGroup, assetStore, playerProjectileGroup );
+        this.pistol2 = new Pistol( this.scene, enemyGroup, assetStore, playerProjectileGroup );
         this.pistol1.startSelected = this.startSelected.bind(this);
         this.pistol2.startSelected = this.startSelected.bind(this);
     }
