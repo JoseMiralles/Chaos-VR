@@ -1,4 +1,6 @@
-# VR-Shooter
+# Chaos VR
+
+[Game Link](https://josemiralles.github.io/VR-Shooter/)
 
 [Trello Board](https://trello.com/b/z9iiNjO8/js-project#)
 
