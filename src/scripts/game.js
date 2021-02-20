@@ -17,12 +17,12 @@ export default class Game {
             this.animate();
             this.setupEnemySpawner();
             this.setupPlayer();
-            this.deltaMultiplier = 0.8 // This is used to slow down and speed up the game. 
+            this.deltaMultiplier = 0.3 // This is used to slow down and speed up the game. 
             
             this.assetStore.menu.onStartButtonClicked = () => {
                 this.enemySpawner.projectileGroup.despawnAll(); // Remove all projectiles if any.
                 this.enemySpawner.smallEnemyHandler.startSpawning();
-                this.deltaMultiplier = 0.8;
+                this.deltaMultiplier = 0.8; // Bring game speed back to normal.
             }
 
             this.player.onDeath = () => {

@@ -25,7 +25,8 @@ export default class Pistol {
 
     // Shoots and applies damage to the target, if any.
     shoot(){
-        this.shotSoundGenerator.play();
+        if (this.shotSoundGenerator.play)
+            this.shotSoundGenerator.play();
 
         this.tempMatrix.identity().extractRotation( this.barrelEnd.matrixWorld );
         this.rayCaster.ray.origin.setFromMatrixPosition( this.barrelEnd.matrixWorld );
@@ -36,7 +37,7 @@ export default class Pistol {
         position.setFromMatrixPosition( this.barrelEnd.matrixWorld );
         const quaternion = new THREE.Quaternion();
         this.barrelEnd.getWorldQuaternion( quaternion );
-        this.playerProjectileGroup.shootFrom( quaternion, position, 20 );
+        this.playerProjectileGroup.shootFrom( quaternion, position, 100 );
 
         // This function gets delegated depending on wether the game menu is up or down.
         this.handleTargets();

@@ -41,14 +41,14 @@ class PlayerProjectile extends THREE.Mesh {
 
     constructor(){
         super();
-        this.position.y = -10;
+        this.position.y = -100;
         this.tick = () => {};
         this.free = true;
     }
 
     spawn( quaternion, position, velocity ){
         this.free = false;
-        this.despawnTimer = 0.2;
+        this.despawnTimer = 0.015;
         this.position.copy( position );
         this.setRotationFromQuaternion(quaternion);
         this.userData.velocity = new THREE.Vector3();
@@ -60,7 +60,7 @@ class PlayerProjectile extends THREE.Mesh {
 
     deSpawn(){
         this.tick = ()=>{};
-        this.position.y = -10;
+        this.position.y = -100;
         this.free = true;
     }
 
