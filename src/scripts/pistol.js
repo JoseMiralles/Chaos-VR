@@ -36,7 +36,7 @@ export default class Pistol {
         position.setFromMatrixPosition( this.barrelEnd.matrixWorld );
         const quaternion = new THREE.Quaternion();
         this.barrelEnd.getWorldQuaternion( quaternion );
-        this.playerProjectileGroup.shootFrom( quaternion, position, 100 );
+        this.playerProjectileGroup.shootFrom( quaternion, position, 20 );
 
         // This function gets delegated depending on wether the game menu is up or down.
         this.handleTargets();

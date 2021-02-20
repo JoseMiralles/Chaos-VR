@@ -14,11 +14,11 @@ export default class PlayerProjectileGroup extends THREE.Group {
 
         for (let i = 1; i <= n; i++ ){
             const projectile = new PlayerProjectile();
-            // projectile.add( this.assetStore.shotModel );
-            const geometry = new THREE.SphereGeometry( 5, 32, 32 );
-            const material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-            const sphere = new THREE.Mesh( geometry, material );
-            projectile.add( sphere );
+            projectile.add( this.assetStore.shotModel.clone() );
+            // const geometry = new THREE.SphereGeometry( 0.1, 0, 0 );
+            // const material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+            // const sphere = new THREE.Mesh( geometry, material );
+            // projectile.add( sphere );
             this.add(
                 projectile
             );
@@ -48,10 +48,9 @@ class PlayerProjectile extends THREE.Mesh {
 
     spawn( quaternion, position, velocity ){
         this.free = false;
-        this.despawnTimer = 1;
+        this.despawnTimer = 0.2;
         this.position.copy( position );
         this.setRotationFromQuaternion(quaternion);
-        // this.rotateX(1.57); // Point towards the player (90degs).
         this.userData.velocity = new THREE.Vector3();
         this.userData.velocity.z = velocity;
         this.userData.velocity.applyQuaternion( quaternion );
