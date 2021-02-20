@@ -91,6 +91,7 @@ export default class Game {
             this.assetStore,
             this.enemySpawner.enemyGroup,
             this.camera );
+        this.scene.add( this.player.playerProjectileGroup );
     }
 
     onWindowResize(){
@@ -110,6 +111,8 @@ export default class Game {
 
         // Delta multiplier is used to speed up or down the game dynamically.
         const delta = this.clock.getDelta() * this.deltaMultiplier;
+
+        this.player.tick( delta );
 
         this.enemySpawner.enemyGroup.children.forEach(
             enemy => enemy.tick( delta, playerPosition ) );
