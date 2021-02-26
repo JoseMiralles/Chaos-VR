@@ -25,8 +25,7 @@ export default class Pistol {
 
     // Shoots and applies damage to the target, if any.
     shoot(){
-        if (this.shotSoundGenerator.play)
-            this.shotSoundGenerator.play();
+        this.shotSoundGenerator.play();
 
         this.tempMatrix.identity().extractRotation( this.barrelEnd.matrixWorld );
         this.rayCaster.ray.origin.setFromMatrixPosition( this.barrelEnd.matrixWorld );

@@ -61,14 +61,14 @@ export default class AssetStore {
                 key: "shotSoundGenerator",
                 audioClass: THREE.Audio,
                 numberOfAudios: 30,
-                volume: 0.2
+                volume: 0.3
             },
             { 
                 path: botImpact,
                 key: "botImpactSoundGenerator",
                 audioClass: THREE.PositionalAudio,
                 numberOfAudios: 20,
-                volume: 0.8
+                volume: 0.6
             },
             { 
                 path: botDestroyed,
@@ -82,14 +82,14 @@ export default class AssetStore {
                 key: "botExplosionSoundGenerator",
                 audioClass: THREE.PositionalAudio,
                 numberOfAudios: 5,
-                volume: 1
+                volume: 0.7
             },
             { 
                 path: playerImpact,
                 key: "playerImpactSoundGenerator",
                 audioClass: THREE.Audio,
                 numberOfAudios: 5,
-                volume: 1
+                volume: 0.7
             },
         ];
 
@@ -102,7 +102,7 @@ export default class AssetStore {
                 // Notify that all assets are loaded after the last sound is loaded.
                 if ( i === filesToLoad.length - 1 )
                     this.allAssetsLoadedCallback();
-            }, null, (err) => console.log(err)));
+            }));
     }
 
     loadFonts(){
@@ -152,6 +152,7 @@ class SoundGenerator {
 
     play(){
         this.getNext().play();
+        return 1;
     }
 
     // Used for positional audio.
