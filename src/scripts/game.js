@@ -12,24 +12,33 @@ export default class Game {
 
         // Load files, initialize game, and start animation loop.
         this.assetStore = new AssetStore( ( arg ) => {
-            this.innitializeGame(HTMLElement);
-            this.scene.add( this.assetStore.menu );
-            this.animate();
-            this.setupEnemySpawner();
-            this.setupPlayer();
-            this.deltaMultiplier = 0.3 // This is used to slow down and speed up the game. 
-            
-            this.assetStore.menu.onStartButtonClicked = () => {
-                this.enemySpawner.projectileGroup.despawnAll(); // Remove all projectiles if any.
-                this.enemySpawner.smallEnemyHandler.startSpawning();
-                this.deltaMultiplier = 0.8; // Bring game speed back to normal.
+
+            if ( this.assetStore.playerImpactSoundGenerator.play() ){
+                this.innitializeGame(HTMLElement);
+                this.scene.add( this.assetStore.menu );
+                this.animate();
+                this.setupEnemySpawner();
+                this.setupPlayer();
+                this.deltaMultiplier = 0.3 // This is used to slow down and speed up the game. 
+                
+                this.assetStore.menu.onStartButtonClicked = () => {
+                    this.enemySpawner.projectileGroup.despawnAll(); // Remove all projectiles if any.
+                    this.enemySpawner.smallEnemyHandler.startSpawning();
+                    this.deltaMultiplier = 0.8; // Bring game speed back to normal.
+                }
+    
+                this.player.onDeath = () => {
+                    this.scene.add( this.assetStore.menu );
+                    this.deltaMultiplier = 0.3;
+                    this.enemySpawner.killAll();
+                };
+            } else {
+                window.alert(
+                    "There was an error while loading the game.\nPlease re-fresh the page to continue."
+                );
             }
 
-            this.player.onDeath = () => {
-                this.scene.add( this.assetStore.menu );
-                this.deltaMultiplier = 0.3;
-                this.enemySpawner.killAll();
-            };
+
         });
     }
 

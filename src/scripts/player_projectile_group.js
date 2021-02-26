@@ -48,7 +48,7 @@ class PlayerProjectile extends THREE.Mesh {
 
     spawn( quaternion, position, velocity ){
         this.free = false;
-        this.despawnTimer = 0.015;
+        this.despawnTimer = 0.050;
         this.position.copy( position );
         this.setRotationFromQuaternion(quaternion);
         this.userData.velocity = new THREE.Vector3();
