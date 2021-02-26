@@ -25,7 +25,16 @@ export default class Pistol {
 
     // Shoots and applies damage to the target, if any.
     shoot(){
-        this.shotSoundGenerator.play();
+        
+        if (this.shotSoundGenerator){
+            try{
+                this.shotSoundGenerator.play();
+            } catch(err){
+                window.alert(
+                    "There was an error while loading the game.\nPlease re-fresh the page to continue."
+                );
+            };
+        }
 
         this.tempMatrix.identity().extractRotation( this.barrelEnd.matrixWorld );
         this.rayCaster.ray.origin.setFromMatrixPosition( this.barrelEnd.matrixWorld );

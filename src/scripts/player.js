@@ -53,19 +53,20 @@ export default class Player {
         }, 500);
     }
 
-    setupWeapons( enemyGroup, assetStore, playerProjectileGroup ){
-        this.pistol1 = new Pistol( this.scene, enemyGroup, assetStore, playerProjectileGroup );
-        this.pistol2 = new Pistol( this.scene, enemyGroup, assetStore, playerProjectileGroup );
-        this.pistol1.startSelected = this.startSelected.bind(this);
-        this.pistol2.startSelected = this.startSelected.bind(this);
-    }
-
+    /// Called when the start button in the main menu is selected.
     startSelected(){
         this.pistol1.handleTargets = this.pistol1.handleEnemyTargets;
         this.pistol2.handleTargets = this.pistol2.handleEnemyTargets;
         this.health = this._initialHealth;
         this.healthBar.reset();
         this.receiveDamage = this._receiveDamage;
+    }
+
+    setupWeapons( enemyGroup, assetStore, playerProjectileGroup ){
+        this.pistol1 = new Pistol( this.scene, enemyGroup, assetStore, playerProjectileGroup );
+        this.pistol2 = new Pistol( this.scene, enemyGroup, assetStore, playerProjectileGroup );
+        this.pistol1.startSelected = this.startSelected.bind(this);
+        this.pistol2.startSelected = this.startSelected.bind(this);
     }
 
     setupControllers(pistolModel){
