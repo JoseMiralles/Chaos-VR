@@ -13,6 +13,8 @@ export default class EnemyRobot extends THREE.Object3D {
         this.tick = ()=>{};
         this.applyDamage = ()=>{};
 
+        this.killScore = 100;
+
         const sphere = new THREE.SphereGeometry( 0.8, 8, 8 );
         const material = this.assetStore.mainEmissiveMaterial;
         this.explosion = new THREE.Mesh( sphere, material );

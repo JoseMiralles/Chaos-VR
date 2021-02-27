@@ -6,7 +6,7 @@ import projectileGroup from "./projectile_group";
 
 export default class EnemySpawner {
 
-    constructor(assetStore){
+    constructor(assetStore, scoreSystem){
 
         // Group in which enemies are spawned.
         this.enemyGroup = new THREE.Group();
@@ -14,11 +14,21 @@ export default class EnemySpawner {
         // Group in which enemy projectiles are spawned.
         this.projectileGroup = new projectileGroup( 200 );
 
-        this.killCount = 0;
+        this.scoreSystem = scoreSystem;
         this.assetStore = assetStore;
 
         this.setupHandlers();
         this.initializeSpawners();
+    }
+
+    /*
+    *   Called whenever a bot is killed.
+    *   Used to increment the total score.
+    *   bot = The bot that was just killed.
+    */
+    botKilled( bot ){
+        this.scoreSystem.incrementScoreBy( bot.killScore );
+        console.log( this.scoreSystem.score );
     }
 
     killAll(){
@@ -43,6 +53,10 @@ export default class EnemySpawner {
             20, // Amount of kills, of this enemy tye are needed to begin spawning one more bot of this type.
             3   // The total number of bots of this kind that can be alive at the same time.
             );
+
+        // Setup listeners for when a bot dies to mantain a count.
+        this.smallEnemyHandler.botKilled = this.botKilled.bind( this );
+        this.mediumEnemyHandler.botKilled = this.botKilled.bind( this );
     }
 
     initializeSpawners(){
@@ -85,6 +99,8 @@ class EnemyHandler {
         this.spawnDivider = spawnDivider;
         this.limit = limit;
 
+        this.botKilled = ()=>{};
+
         this.populateArray( enemyClass, model, projectileGroup, assetStore, enemyGroup, spawnDivider, limit );
     }
 
@@ -122,6 +138,7 @@ class EnemyHandler {
             this.array[i].onDeath = () => {
                 this.usedSpots --;
                 this.killCount ++;
+                this.botKilled( this.array[i] );
                 this.adjustSpawnRate();
             }
             enemyGroup.add( this.array[i] );
