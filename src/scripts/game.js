@@ -3,6 +3,7 @@ import { VRButton } from "three/examples/jsm/webxr/VRButton.js";
 import Player from "./player";
 import AssetStore from "./util/AssetStore";
 import EnemySpawner from "./enemy_spawner";
+import ScoreSystem from "./score_system";
 
 export default class Game {
 
@@ -22,12 +23,15 @@ export default class Game {
                 this.deltaMultiplier = 0.3 // This is used to slow down and speed up the game. 
                 
                 this.assetStore.menu.onStartButtonClicked = () => {
+                    this.ScoreSystem.restart();
+                    this.ScoreSystem.startCounting();
                     this.enemySpawner.projectileGroup.despawnAll(); // Remove all projectiles if any.
                     this.enemySpawner.smallEnemyHandler.startSpawning();
                     this.deltaMultiplier = 0.8; // Bring game speed back to normal.
                 }
     
                 this.player.onDeath = () => {
+                    this.ScoreSystem.stopCounting();
                     this.scene.add( this.assetStore.menu );
                     this.deltaMultiplier = 0.3;
                     this.enemySpawner.killAll();
@@ -58,7 +62,6 @@ export default class Game {
             camera.lookAt( arr[n].getWorldPosition().x, arr[n].getWorldPosition().y, arr[n].getWorldPosition().z );
         }
         this.camera.position.set(0, 1.6, 0);
-        this.assetStore.listener.rotateZ(1.57);
         this.camera.add( this.assetStore.listener ); // Add audio listener to camera.
 
         // Setup lights
@@ -82,12 +85,15 @@ export default class Game {
         HTMLElement.appendChild( this.renderer.domElement );
         HTMLElement.appendChild( VRButton.createButton( this.renderer ) );
 
+        this.ScoreSystem = new ScoreSystem( this.scene, this.assetStore );
+
         window.addEventListener( 'resize', this.onWindowResize.bind(this) );
     }
 
     setupEnemySpawner(){
         this.enemySpawner = new EnemySpawner(
-            this.assetStore
+            this.assetStore,
+            this.ScoreSystem
         );
         this.scene.add(this.enemySpawner.enemyGroup);
         this.scene.add(this.enemySpawner.projectileGroup);

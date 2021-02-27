@@ -6,7 +6,7 @@ import projectileGroup from "./projectile_group";
 
 export default class EnemySpawner {
 
-    constructor(assetStore){
+    constructor(assetStore, scoreSystem){
 
         // Group in which enemies are spawned.
         this.enemyGroup = new THREE.Group();
@@ -14,15 +14,24 @@ export default class EnemySpawner {
         // Group in which enemy projectiles are spawned.
         this.projectileGroup = new projectileGroup( 200 );
 
-        this.scoreSystem = new ScoreSystem();
+        this.scoreSystem = scoreSystem;
         this.assetStore = assetStore;
 
         this.setupHandlers();
         this.initializeSpawners();
     }
 
+    /*
+    *   Called whenever a bot is killed.
+    *   Used to increment the total score.
+    *   bot = The bot that was just killed.
+    */
+    botKilled( bot ){
+        this.scoreSystem.incrementScoreBy( bot.killScore );
+        console.log( this.scoreSystem.score );
+    }
+
     killAll(){
-        this.scoreSystem.stopCounting();
         this.setupHandlers();
         this.enemyGroup.children.forEach( bot => {
             bot.applyDamage(10000);
@@ -48,16 +57,6 @@ export default class EnemySpawner {
         // Setup listeners for when a bot dies to mantain a count.
         this.smallEnemyHandler.botKilled = this.botKilled.bind( this );
         this.mediumEnemyHandler.botKilled = this.botKilled.bind( this );
-    }
-
-    /*
-    *   Called whenever a bot is killed.
-    *   Used to increment the total score.
-    *   bot = The bot that was just killed.
-    */
-    botKilled( bot ){
-        this.scoreSystem.incrementScoreBy( bot.killScore );
-        console.log( this.scoreSystem.score );
     }
 
     initializeSpawners(){
@@ -144,27 +143,6 @@ class EnemyHandler {
             }
             enemyGroup.add( this.array[i] );
         }
-    }
-
-}
-
-class ScoreSystem{
-
-    constructor(){
-        this.score = 0;
-        this._isCounting = true;
-    }
-
-    incrementScoreBy( n ){
-        if (this._isCounting) this.score += n;
-    }
-
-    stopCounting(){
-        this._isCounting = false;
-    }
-
-    startCounting(){
-        this._isCounting = true;
     }
 
 }

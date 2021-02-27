@@ -11,7 +11,7 @@ import botDestroyed from "../../../audio/bot_destroyed.mp3";
 import botExplosion from "../../../audio/bot_explosion.mp3";
 import playerImpact from "../../../audio/player_impact.mp3";
 
-// import font from "../../../fonts/toboto_medium.ttf";
+import font from "../../../fonts/toboto_medium.ttf";
 
 export default class AssetStore {
 
@@ -23,6 +23,8 @@ export default class AssetStore {
         this.pathPrepend = "dist/";
         this.setupLocalAssets();
         this.load3DAssets();
+
+        this.loadFonts = this.loadFonts.bind(this);
     }
 
     setupLocalAssets(){
@@ -101,18 +103,17 @@ export default class AssetStore {
                 
                 // Notify that all assets are loaded after the last sound is loaded.
                 if ( i === filesToLoad.length - 1 )
-                    this.allAssetsLoadedCallback();
+                    this.loadFonts();
             }));
     }
 
     loadFonts(){
         const loader = new TTFLoader();
         const fontLoader = new THREE.FontLoader();
-        console.log(font);
         loader.load(this.pathPrepend + font, ( _font ) => {
-            this.setupMenu( fontLoader.parse(_font) );
+            this.mainFont = fontLoader.parse(_font);
+            this.allAssetsLoadedCallback();
         });
-        this.allAssetsLoadedCallback();
     }
 
     // Setups the main menu, and it's contents.
