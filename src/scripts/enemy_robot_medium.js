@@ -8,6 +8,7 @@ export default class EnemyRobotMedium extends EnemyRobot {
         this._highSpeed = 0.3;
         this._lowSpeed = 0.1;
         this._projectileVelocity = 7;
+        this.killScore = 500;
     }
 
 }

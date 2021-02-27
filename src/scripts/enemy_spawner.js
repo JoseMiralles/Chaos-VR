@@ -14,7 +14,7 @@ export default class EnemySpawner {
         // Group in which enemy projectiles are spawned.
         this.projectileGroup = new projectileGroup( 200 );
 
-        this.killCount = 0;
+        this.scoreSystem = new ScoreSystem();
         this.assetStore = assetStore;
 
         this.setupHandlers();
@@ -22,6 +22,7 @@ export default class EnemySpawner {
     }
 
     killAll(){
+        this.scoreSystem.stopCounting();
         this.setupHandlers();
         this.enemyGroup.children.forEach( bot => {
             bot.applyDamage(10000);
@@ -43,6 +44,20 @@ export default class EnemySpawner {
             20, // Amount of kills, of this enemy tye are needed to begin spawning one more bot of this type.
             3   // The total number of bots of this kind that can be alive at the same time.
             );
+
+        // Setup listeners for when a bot dies to mantain a count.
+        this.smallEnemyHandler.botKilled = this.botKilled.bind( this );
+        this.mediumEnemyHandler.botKilled = this.botKilled.bind( this );
+    }
+
+    /*
+    *   Called whenever a bot is killed.
+    *   Used to increment the total score.
+    *   bot = The bot that was just killed.
+    */
+    botKilled( bot ){
+        this.scoreSystem.incrementScoreBy( bot.killScore );
+        console.log( this.scoreSystem.score );
     }
 
     initializeSpawners(){
@@ -85,6 +100,8 @@ class EnemyHandler {
         this.spawnDivider = spawnDivider;
         this.limit = limit;
 
+        this.botKilled = ()=>{};
+
         this.populateArray( enemyClass, model, projectileGroup, assetStore, enemyGroup, spawnDivider, limit );
     }
 
@@ -122,10 +139,32 @@ class EnemyHandler {
             this.array[i].onDeath = () => {
                 this.usedSpots --;
                 this.killCount ++;
+                this.botKilled( this.array[i] );
                 this.adjustSpawnRate();
             }
             enemyGroup.add( this.array[i] );
         }
+    }
+
+}
+
+class ScoreSystem{
+
+    constructor(){
+        this.score = 0;
+        this._isCounting = true;
+    }
+
+    incrementScoreBy( n ){
+        if (this._isCounting) this.score += n;
+    }
+
+    stopCounting(){
+        this._isCounting = false;
+    }
+
+    startCounting(){
+        this._isCounting = true;
     }
 
 }
