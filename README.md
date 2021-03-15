@@ -34,6 +34,8 @@ Facebook recommends keeping total vertices to under 200k for all 3D assets. This
 
 # Ticking / Animation
 
+![VR Shootdown Bot](https://github.com/JoseMiralles/VR-Shooter/blob/main/images/shot%20down.gif?raw=true)
+
 The Game class has a main `tick()` method which runs once every frame. This method then calls `tick()` all of the children of the scene that need to be animated.
 
 The [EnemyRobot class](https://github.com/JoseMiralles/VR-Shooter/blob/main/src/scripts/enemy_robot.js#L169) contains multiple ticking functions that get delegated based on the enemy's ifecycle.
@@ -43,8 +45,6 @@ The [EnemyRobot class](https://github.com/JoseMiralles/VR-Shooter/blob/main/src/
 2. `deathTick()` - Ticking is delegated to this function as soon as the bot's health goes bellow 0. It also makes the bot descend at an increasing speed on each frame. It also calls mainTick() to mantain the bot on its predetermined path while also falling.
 
 3. `blowUpTick()` - Hides the bot, and shows an explosion (sphere) which is scaled up on each frame.
-
-![VR Shootdown Bot](https://github.com/JoseMiralles/VR-Shooter/blob/main/images/shot%20down.gif?raw=true)
 
 <br>
 
@@ -61,6 +61,8 @@ This is why [Audios](https://threejs.org/docs/#api/en/audio/Audio) are stored in
 <br>
 
 # Using a single GLTF file for all 3d assets.
+
+![Blender Composition](https://github.com/JoseMiralles/VR-Shooter/blob/main/images/blener-composite.jpg?raw=true)
 
 All 3D meshes were built using Blender, and exported in a single GLTF file by linking all scenes into a single composite scene, which then gets exported. The [GLTFLoader](https://threejs.org/docs/#examples/en/loaders/GLTFLoader) from THREE.js is then used to load all assets into an array of scenes and meshes.
 
