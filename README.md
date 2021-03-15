@@ -6,6 +6,10 @@
 
 <br>
 
+![VR Gameplay Gif](https://github.com/JoseMiralles/VR-Shooter/blob/main/images/chaos_vr_game_gif.gif?raw=true)
+
+<br>
+
 # Overview
 
 This is a VR "shoot 'em up" style game with low poly aesthetics.
@@ -39,6 +43,8 @@ The [EnemyRobot class](https://github.com/JoseMiralles/VR-Shooter/blob/main/src/
 2. `deathTick()` - Ticking is delegated to this function as soon as the bot's health goes bellow 0. It also makes the bot descend at an increasing speed on each frame. It also calls mainTick() to mantain the bot on its predetermined path while also falling.
 
 3. `blowUpTick()` - Hides the bot, and shows an explosion (sphere) which is scaled up on each frame.
+
+![VR Shootdown Bot](https://github.com/JoseMiralles/VR-Shooter/blob/main/images/shot%20down.gif?raw=true)
 
 <br>
 
